@@ -52,15 +52,19 @@ function renderTimeline(scrollToEnd = false, centerYear = null) {
     const scrollable = document.querySelector('.timeline-scrollable');
 
     const timelineWidth = getTimelineWidth();
+    
+    // Ensure timeline layers extend to at least the viewport width to prevent extra space on the right
+    const viewportWidth = scrollable ? scrollable.clientWidth : window.innerWidth;
+    const effectiveWidth = Math.max(timelineWidth, viewportWidth);
 
     container.style.width = '100%';
-    eventsLayer.style.width = `${timelineWidth}px`;
-    yearsLayer.style.width = `${timelineWidth}px`;
-    reflectionLayer.style.width = `${timelineWidth}px`;
+    eventsLayer.style.width = `${effectiveWidth}px`;
+    yearsLayer.style.width = `${effectiveWidth}px`;
+    reflectionLayer.style.width = `${effectiveWidth}px`;
 
     const timelineLine = scrollable.querySelector('.timeline-line');
     if (timelineLine) {
-        timelineLine.style.width = `${timelineWidth}px`;
+        timelineLine.style.width = `${effectiveWidth}px`;
     }
 
     renderYearLabels();

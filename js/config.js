@@ -1,7 +1,7 @@
 // Shared timeline configuration, state, and DOM references.
 
 // Timeline Configuration
-let yearWidth = 50; // Default width per year in pixels
+let yearWidth = 15; // Default width per year in pixels
 const minEventLabelWidth = 100; // Hide inline content on narrower blocks
 const condensedYearWidthThreshold = 45; // Below this we condense year labels
 // Decide which year labels to render based on the current zoom (yearWidth)

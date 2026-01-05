@@ -1,7 +1,7 @@
 // Zoom controls for adjusting year width.
 
 const maxZoomIn = 200;
-const maxZoomOut = 28;
+const maxZoomOut = 12;
 
 function setZoomButtonStates() {
     if (!zoomInBtn || !zoomOutBtn) return;
