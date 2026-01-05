@@ -239,6 +239,7 @@ function showEventModal(event) {
 
     const modalLinksSection = document.querySelector('.modal-links-section');
     const modalFooter = document.querySelector('.modal-footer');
+    const modalLinksTitle = document.getElementById('modalLinksTitle');
     modalLinks.innerHTML = '';
     const allLinks = event.links || [];
     if (allLinks.length > 0) {
@@ -253,6 +254,8 @@ function showEventModal(event) {
         });
         modalLinksSection.style.display = 'flex';
         modalFooter.classList.remove('no-links');
+        // Reset to collapsed state (default) when showing a new event
+        modalLinksSection.classList.add('collapsed');
     } else {
         modalLinksSection.style.display = 'none';
         modalFooter.classList.add('no-links');
@@ -321,4 +324,22 @@ function clearModalVideos(container) {
     container.innerHTML = '';
     container.style.display = 'none';
 }
+
+// Initialize toggle functionality for modal links section
+function initModalLinksToggle() {
+    const modalLinksTitle = document.getElementById('modalLinksTitle');
+    
+    if (!modalLinksTitle) return;
+    
+    // Add click handler to toggle collapsed state
+    modalLinksTitle.addEventListener('click', () => {
+        const modalLinksSection = document.querySelector('.modal-links-section');
+        if (modalLinksSection) {
+            modalLinksSection.classList.toggle('collapsed');
+        }
+    });
+}
+
+// Initialize modal links toggle when DOM is ready
+document.addEventListener('DOMContentLoaded', initModalLinksToggle);
 
