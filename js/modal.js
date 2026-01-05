@@ -6,6 +6,12 @@ let currentEventIndex = -1;
 
 function showInfoModal() {
     const modal = document.getElementById('infoModal');
+    
+    // Ensure content is populated (in case it wasn't loaded yet)
+    if (typeof populateInfoModal === 'function') {
+        populateInfoModal();
+    }
+    
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
 }

@@ -41,6 +41,7 @@ function init() {
 
     setupTimelineDrag();
     setupMinimapInteractions();
+    loadInfo();
     loadEvents();
 }
 
