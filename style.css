@@ -114,13 +114,13 @@ body {
 /* Info Button */
 .info-button {
     position: fixed;
-    top: 16px;
-    right: 16px;
+    top: 14px;
+    right: 14px;
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: #1f1f1f;
-    border: 2px solid #333333;
+    background: #464646;
+    border: 2px solid #444444;
     color: #ffffff;
     font-family: Georgia, 'Times New Roman', serif;
     font-size: 22px;
@@ -136,8 +136,9 @@ body {
 }
 
 .info-button:hover {
-    background: #2a2a2a;
-    transform: scale(1.08);
+    background: #5e5e5e;
+    border-color: #5e5e5e;
+    transform: scale(1.04);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
 }
 
