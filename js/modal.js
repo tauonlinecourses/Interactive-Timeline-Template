@@ -10,6 +10,9 @@ function showInfoModal() {
     // Ensure content is populated (in case it wasn't loaded yet)
     if (typeof populateInfoModal === 'function') {
         populateInfoModal();
+    } else if (typeof updateInfoVideoDisplay === 'function') {
+        // If populateInfoModal already ran, just update video display
+        updateInfoVideoDisplay();
     }
     
     modal.classList.add('active');
@@ -18,8 +21,6 @@ function showInfoModal() {
 
 function closeInfoModal() {
     const modal = document.getElementById('infoModal');
-    const videoPlaceholder = document.getElementById('infoVideoPlaceholder');
-    const videoContainer = document.getElementById('infoModalVideo');
     const videoIframe = document.getElementById('infoVideoIframe');
     
     // Stop video if playing
@@ -30,9 +31,10 @@ function closeInfoModal() {
         videoIframe.src = '';
     }
     
-    // Reset to show placeholder
-    if (videoPlaceholder) videoPlaceholder.style.display = 'flex';
-    if (videoContainer) videoContainer.style.display = 'none';
+    // Reset video display state (will be set correctly when modal opens again)
+    if (typeof updateInfoVideoDisplay === 'function') {
+        updateInfoVideoDisplay();
+    }
     
     modal.classList.remove('active');
     document.body.style.overflow = '';
@@ -43,13 +45,13 @@ function playInfoVideo() {
     const videoContainer = document.getElementById('infoModalVideo');
     const videoIframe = document.getElementById('infoVideoIframe');
     
-    // Replace with your actual YouTube video ID
-    const infoVideoId = 'YOUR_VIDEO_ID_HERE';
+    // Get video ID from global variable set by data-loader.js
+    const videoId = window.infoVideoId || (typeof infoVideoId !== 'undefined' ? infoVideoId : null);
     
-    if (infoVideoId && infoVideoId !== 'YOUR_VIDEO_ID_HERE') {
-        videoIframe.src = `https://www.youtube.com/embed/${infoVideoId}?enablejsapi=1&rel=0&autoplay=1`;
-        videoPlaceholder.style.display = 'none';
-        videoContainer.style.display = 'block';
+    if (videoId && videoIframe) {
+        videoIframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&rel=0&autoplay=1`;
+        if (videoPlaceholder) videoPlaceholder.style.display = 'none';
+        if (videoContainer) videoContainer.style.display = 'block';
     }
 }
 

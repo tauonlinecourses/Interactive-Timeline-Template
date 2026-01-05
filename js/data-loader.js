@@ -1,6 +1,7 @@
 // Data loading: fetch events JSON and bootstrap timeline.
 
 let infoData = null;
+let infoVideoId = null;
 
 async function loadInfo() {
     try {
@@ -29,8 +30,24 @@ function populateInfoModal() {
     if (infoData && contentSections) {
         contentSections.innerHTML = '';
         
+        // Reset video ID
+        infoVideoId = null;
+        window.infoVideoId = null;
+        
         // Iterate through infoData and create sections dynamically
         Object.entries(infoData).forEach(([title, text]) => {
+            // Skip the video link section - it will be handled by the video player
+            if (title === 'קישור לסרטון הסבר') {
+                // Extract YouTube video ID from the URL
+                const match = text.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
+                if (match && match[1]) {
+                    infoVideoId = match[1];
+                    // Make it globally accessible
+                    window.infoVideoId = infoVideoId;
+                }
+                return; // Skip creating a text section for the video URL
+            }
+            
             const section = document.createElement('div');
             section.className = 'info-section';
             
@@ -46,6 +63,31 @@ function populateInfoModal() {
             section.appendChild(sectionText);
             contentSections.appendChild(section);
         });
+        
+        // Automatically embed video if available, otherwise show placeholder
+        updateInfoVideoDisplay();
+    }
+}
+
+function updateInfoVideoDisplay() {
+    const videoPlaceholder = document.getElementById('infoVideoPlaceholder');
+    const videoContainer = document.getElementById('infoModalVideo');
+    const videoIframe = document.getElementById('infoVideoIframe');
+    
+    const videoId = window.infoVideoId || (typeof infoVideoId !== 'undefined' ? infoVideoId : null);
+    
+    if (videoId && videoPlaceholder && videoContainer && videoIframe) {
+        // Embed the video automatically
+        videoIframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&rel=0`;
+        videoPlaceholder.style.display = 'none';
+        videoContainer.style.display = 'block';
+    } else if (videoPlaceholder && videoContainer) {
+        // Show placeholder if no video
+        videoPlaceholder.style.display = 'flex';
+        videoContainer.style.display = 'none';
+        if (videoIframe) {
+            videoIframe.src = '';
+        }
     }
 }
 
