@@ -2,6 +2,34 @@
 
 let tooltipPlacement = 'above';
 
+// Ensure the tooltip never overflows the viewport horizontally.
+function clampTooltipToViewport(padding = 16) {
+    if (!eventTooltip) return;
+
+    const rect = eventTooltip.getBoundingClientRect();
+    const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
+
+    // Nothing to do if we don't have layout info yet.
+    if (!rect.width || !viewportWidth) return;
+
+    let currentLeft = parseFloat(eventTooltip.style.left || '0');
+    if (Number.isNaN(currentLeft)) currentLeft = 0;
+
+    // Shift right if we're hanging off the left edge.
+    if (rect.left < padding) {
+        const delta = padding - rect.left;
+        currentLeft += delta;
+    }
+
+    // Shift left if we're hanging off the right edge.
+    if (rect.right > viewportWidth - padding) {
+        const delta = rect.right - (viewportWidth - padding);
+        currentLeft -= delta;
+    }
+
+    eventTooltip.style.left = `${currentLeft}px`;
+}
+
 function updateTooltipPosition(targetElement, cursorEvent = null) {
     const element = targetElement || tooltipTargetElement;
     if (!element || !eventTooltip) return;
@@ -9,6 +37,7 @@ function updateTooltipPosition(targetElement, cursorEvent = null) {
     if (tooltipFollowCursor && cursorEvent) {
         eventTooltip.style.left = `${cursorEvent.pageX}px`;
         eventTooltip.style.top = `${cursorEvent.pageY}px`;
+        clampTooltipToViewport();
         return;
     }
 
@@ -20,6 +49,7 @@ function updateTooltipPosition(targetElement, cursorEvent = null) {
 
     eventTooltip.style.left = `${tooltipLeft}px`;
     eventTooltip.style.top = `${tooltipTop}px`;
+    clampTooltipToViewport();
 }
 
 function buildTooltipDescription(event, maxLength = 110) {
