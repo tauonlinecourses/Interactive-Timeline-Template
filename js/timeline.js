@@ -149,6 +149,8 @@ function renderEvents() {
             if (isZooming) {
                 eventDiv.remove();
             } else {
+                // Clear inline opacity that may have been set when canceling a previous fade-out
+                eventDiv.style.opacity = '';
                 eventDiv.classList.add('fade-out');
                 eventDiv.addEventListener('transitionend', function handler(e) {
                     if (e.propertyName === 'opacity' && eventDiv.classList.contains('fade-out')) {
