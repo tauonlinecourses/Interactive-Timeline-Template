@@ -541,6 +541,7 @@ body {
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.4s ease;
     opacity: 1;
+    overflow: visible; /* Allow title to overflow */
 }
 
 .event-block {
@@ -702,18 +703,22 @@ body {
 }
 
 .event-title {
+    position: absolute;
+    top: -22px;
+    left: 0;
     display: inline-flex;
     align-items: center;
     justify-content: flex-start;
     gap: 6px;
-    width: 100%;
-    max-width: 100%; /* Constrain to event width */
+    width: max-content;
+    max-width: 500px; /* Cap title width for very long titles */
     text-align: right;
-    overflow: hidden; /* Prevent titles from extending beyond event */
+    overflow: visible; /* Allow title to overflow */
     padding-left: 15px; /* Align with angled edge of block below */
-    margin-bottom: 4px;
     direction: rtl;
     min-height: 18px; /* Reserve space even when title is hidden */
+    transition: transform 0.1s ease; /* Smooth sticky positioning */
+    will-change: transform; /* Optimize for frequent updates */
 }
 
 .event-title-text {

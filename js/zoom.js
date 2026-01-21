@@ -68,6 +68,7 @@ function updateZoom(newYearWidth, options = {}) {
             scrollable.scrollLeft = Math.max(0, Math.min(newScrollLeft, maxScroll));
             refreshMinimap();
         }
+        updateStickyEventTitles();
     }, 0);
 
     setZoomButtonStates();

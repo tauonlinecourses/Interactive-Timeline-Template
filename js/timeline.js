@@ -45,6 +45,23 @@ function setupTimelineDrag() {
     dragSurface.addEventListener('mouseleave', endDrag);
 }
 
+function setupStickyTitlesOnScroll() {
+    const scrollable = getTimelineScrollable();
+    if (!scrollable) return;
+
+    // Update sticky titles on scroll with requestAnimationFrame throttling
+    let scrollFramePending = false;
+    scrollable.addEventListener('scroll', () => {
+        if (!scrollFramePending) {
+            scrollFramePending = true;
+            requestAnimationFrame(() => {
+                scrollFramePending = false;
+                updateStickyEventTitles();
+            });
+        }
+    });
+}
+
 function renderTimeline(scrollToEnd = false, centerYear = null) {
     if (minYear === null || maxYear === null) return;
 
@@ -79,6 +96,7 @@ function renderTimeline(scrollToEnd = false, centerYear = null) {
             const maxScroll = scrollable.scrollWidth - scrollable.clientWidth;
             scrollable.scrollLeft = Math.max(0, Math.min(targetScrollLeft, maxScroll));
         }
+        updateStickyEventTitles();
     }, 0);
 }
 
@@ -408,5 +426,55 @@ function renderEvents() {
     }
 
     refreshMinimap({ redraw: true });
+}
+
+function updateStickyEventTitles() {
+    const scrollable = getTimelineScrollable();
+    if (!scrollable) return;
+
+    const viewLeft = scrollable.scrollLeft;
+    const viewRight = viewLeft + scrollable.clientWidth;
+    const viewCenter = viewLeft + scrollable.clientWidth / 2;
+    const padding = 10; // Padding from viewport edges
+
+    const allEventElements = eventsLayer.querySelectorAll('.event:not(.fade-out)');
+    
+    allEventElements.forEach(eventDiv => {
+        const titleEl = eventDiv.querySelector('.event-title');
+        if (!titleEl) return;
+
+        // Get event position and width from inline styles
+        const eventLeft = parseFloat(eventDiv.style.left) || 0;
+        const eventWidth = parseFloat(eventDiv.style.width) || 0;
+        const eventRight = eventLeft + eventWidth;
+
+        // Measure title width (need to temporarily reset transform to get accurate measurement)
+        const currentTransform = titleEl.style.transform;
+        titleEl.style.transform = '';
+        const titleWidth = titleEl.offsetWidth;
+        titleEl.style.transform = currentTransform;
+
+        // Calculate desired title position
+        // Default: align to the right edge of the event block
+        let desiredTitleX = eventRight - titleWidth;
+        
+        // If the default position would be outside the viewport, prefer center of viewport
+        if (desiredTitleX > viewRight - padding - titleWidth || desiredTitleX < viewLeft + padding) {
+            // Prefer viewport center
+            desiredTitleX = viewCenter - titleWidth / 2;
+        }
+
+        // Clamp to viewport bounds
+        desiredTitleX = Math.max(desiredTitleX, viewLeft + padding);
+        desiredTitleX = Math.min(desiredTitleX, viewRight - padding - titleWidth);
+
+        // Clamp within event span (keep within event boundaries)
+        desiredTitleX = Math.max(desiredTitleX, eventLeft);
+        desiredTitleX = Math.min(desiredTitleX, eventRight - titleWidth);
+
+        // Apply transform relative to event's left position
+        const translateX = desiredTitleX - eventLeft;
+        titleEl.style.transform = `translateX(${translateX}px)`;
+    });
 }
 

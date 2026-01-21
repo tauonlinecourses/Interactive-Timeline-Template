@@ -40,6 +40,7 @@ function init() {
     });
 
     setupTimelineDrag();
+    setupStickyTitlesOnScroll();
     setupMinimapInteractions();
     loadInfo();
     loadEvents();
