@@ -183,7 +183,7 @@ function showEventModal(event, options = {}) {
         }
     }
 
-    modalTitle.textContent = event.title;
+    modalTitle.textContent = reverseHebrewEnglishTitle(event.title);
 
     // Show video icon only if video_url is present
     modalVideoIcon.style.display = hasVideos ? 'inline' : 'none';

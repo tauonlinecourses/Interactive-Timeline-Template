@@ -97,7 +97,7 @@ function buildTooltipHTML(event) {
                 <div class="tooltip-years">${yearsText}</div>
             </div>
             <div class="tooltip-title-wrapper">
-                <span class="tooltip-title">${event.title || ''}</span>
+                <span class="tooltip-title">${reverseHebrewEnglishTitle(event.title || '')}</span>
                 ${videoIconHTML}
             </div>
             <div class="tooltip-description">${descriptionPreview}</div>

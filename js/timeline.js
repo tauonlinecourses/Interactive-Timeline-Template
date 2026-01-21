@@ -198,7 +198,7 @@ function renderEvents() {
 
             const titleText = document.createElement('span');
             titleText.className = 'event-title-text';
-            titleText.textContent = event.title;
+            titleText.textContent = reverseHebrewEnglishTitle(event.title);
             eventTitle.appendChild(titleText);
 
             if (event.video_url && event.video_url.trim() !== '') {

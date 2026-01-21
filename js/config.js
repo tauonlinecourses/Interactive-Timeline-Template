@@ -17,7 +17,7 @@ let events = [];
 
 // Color Palette - 10 colors for automatic category assignment
 const colorPalette = [
-    '#AE563C',
+    '#C36D53',
     '#66B973',
     '#E7B75C',
     '#305C7A',
@@ -31,7 +31,8 @@ const colorPalette = [
     '#1abc9c',  // Teal
     '#3498db',  // Light Blue
     '#9b59b6',  // Violet
-    '#e67e22'   // Dark Orange
+    '#e67e22',   // Dark Orange
+    '#AE563C' // original red
 ];
 
 // Dynamic category to color mapping (will be populated after loading events)
@@ -90,5 +91,27 @@ if (timelineMinimap) {
     minimapHighlight.className = 'minimap-highlight';
     minimapHighlight.style.display = 'none';
     timelineMinimap.appendChild(minimapHighlight);
+}
+
+// Utility function to reverse mixed Hebrew-English titles
+function reverseHebrewEnglishTitle(title) {
+    // Check if title contains both Hebrew and Latin characters
+    const hasHebrew = /[\u0590-\u05FF]/.test(title);
+    const hasLatin = /[A-Za-z]/.test(title);
+    
+    if (!hasHebrew || !hasLatin) {
+        // If title is only Hebrew or only English, return as is
+        return title;
+    }
+    
+    // Split by common separators (hyphen, dash, space-dash-space, etc.)
+    const parts = title.split(/(-|–|—|\s-\s|\s–\s|\s—\s)/);
+    
+    // Filter out empty strings and reverse the array
+    const nonEmptyParts = parts.filter(part => part.trim() !== '');
+    const reversed = nonEmptyParts.reverse();
+    
+    // Join with space if needed
+    return reversed.join(' ').trim();
 }
 
