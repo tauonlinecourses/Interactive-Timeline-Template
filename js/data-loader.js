@@ -108,13 +108,17 @@ async function loadEvents() {
         }
 
         mapCategoriesToColors();
-        readURLParams();
+        const { eventIndex } = readURLParams();
         renderCategoryButtons();
 
         minYear = Math.min(...events.map(event => event.start_year));
         maxYear = Math.max(...events.map(event => event.end_year));
 
         renderTimeline(true);
+
+        if (typeof eventIndex === 'number' && eventIndex >= 0 && eventIndex < events.length) {
+            showEventModal(events[eventIndex], { skipHistoryUpdate: true });
+        }
 
         setTimeout(() => {
             isInitialRender = false;

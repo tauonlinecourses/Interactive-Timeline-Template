@@ -137,6 +137,7 @@ function updateURL() {
 function readURLParams() {
     const urlParams = new URLSearchParams(window.location.search);
     const hideParam = urlParams.get('hide');
+    let eventIndex = null;
 
     if (hideParam) {
         const categoriesToHide = hideParam.split(',').map(cat => cat.trim());
@@ -147,6 +148,16 @@ function readURLParams() {
             }
         });
     }
+
+    const eventParam = urlParams.get('event');
+    if (eventParam !== null) {
+        const parsedIndex = parseInt(eventParam, 10);
+        if (!isNaN(parsedIndex) && parsedIndex >= 0 && parsedIndex < events.length) {
+            eventIndex = parsedIndex;
+        }
+    }
+
+    return { eventIndex };
 }
 
 /**

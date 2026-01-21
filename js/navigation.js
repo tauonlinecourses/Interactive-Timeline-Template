@@ -12,7 +12,7 @@ function handlePopState() {
         hiddenCategories[category] = false;
     });
 
-    readURLParams();
+    const { eventIndex } = readURLParams();
 
     const buttons = categoriesMenu.querySelectorAll('.category-btn');
     buttons.forEach(button => {
@@ -25,5 +25,14 @@ function handlePopState() {
     });
 
     renderEvents();
+
+    if (typeof eventIndex === 'number' && eventIndex >= 0 && eventIndex < events.length) {
+        showEventModal(events[eventIndex], { skipHistoryUpdate: true });
+    } else {
+        const eventModal = document.getElementById('eventModal');
+        if (eventModal && eventModal.classList.contains('active')) {
+            closeEventModal(true);
+        }
+    }
 }
 

@@ -111,7 +111,26 @@ function isYouTubeLink(url) {
     return url && (url.includes('youtube.com') || url.includes('youtu.be'));
 }
 
-function showEventModal(event) {
+function updateEventURL(eventIndex, options = {}) {
+    const { replace = false } = options;
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if (Number.isInteger(eventIndex) && eventIndex >= 0) {
+        urlParams.set('event', eventIndex);
+    } else {
+        urlParams.delete('event');
+    }
+
+    const newURL = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
+    if (replace) {
+        window.history.replaceState({}, '', newURL);
+    } else {
+        window.history.pushState({}, '', newURL);
+    }
+}
+
+function showEventModal(event, options = {}) {
+    const { skipHistoryUpdate = false } = options;
     currentEventIndex = events.findIndex(e => e === event);
 
     updateNavigationButtons();
@@ -263,6 +282,10 @@ function showEventModal(event) {
 
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
+
+    if (!skipHistoryUpdate) {
+        updateEventURL(currentEventIndex, { replace: false });
+    }
 }
 
 function updateNavigationButtons() {
@@ -292,7 +315,8 @@ function showNextEvent() {
     }
 }
 
-function closeEventModal() {
+function closeEventModal(arg = false) {
+    const skipHistoryUpdate = typeof arg === 'boolean' ? arg : false;
     const modal = document.getElementById('eventModal');
     const modalVideos = document.getElementById('modalVideos');
 
@@ -300,6 +324,11 @@ function closeEventModal() {
 
     modal.classList.remove('active');
     document.body.style.overflow = '';
+
+    if (!skipHistoryUpdate) {
+        // Use replaceState so closing doesn't add an extra history entry.
+        updateEventURL(null, { replace: true });
+    }
 }
 
 // Stop and remove any YouTube iframes within the modal.
