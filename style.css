@@ -568,6 +568,36 @@ body {
     pointer-events: none;
 }
 
+/* Entrance animation for initial page load */
+@keyframes eventEntranceSlide {
+    0% {
+        opacity: 0;
+        transform: translateY(40px) scale(0.9);
+    }
+    60% {
+        opacity: 1;
+        transform: translateY(-8px) scale(1.02);
+    }
+    80% {
+        transform: translateY(3px) scale(0.99);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.event.entrance-animation {
+    opacity: 0;
+    animation: eventEntranceSlide 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.event.entrance-animation .event-title {
+    opacity: 0;
+    animation: eventEntranceSlide 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    animation-delay: inherit;
+}
+
 .event:hover {
     transform: translateY(-3px);
     z-index: 1000 !important; /* High z-index on hover to ensure hovered event appears above all others */

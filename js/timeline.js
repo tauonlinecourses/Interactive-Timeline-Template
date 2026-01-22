@@ -200,6 +200,14 @@ function renderEvents() {
         }
     });
 
+    // Prepare entrance animation: sort events by start_year for sequential reveal
+    let entranceAnimationEvents = [];
+    if (shouldPlayEntranceAnimation && isInitialRender && !entranceAnimationInProgress) {
+        entranceAnimationEvents = Array.from(visibleEventMap.entries())
+            .sort((a, b) => a[1].start_year - b[1].start_year);
+        entranceAnimationInProgress = true;
+    }
+
     existingEventMap.forEach((eventDiv, eventIndex) => {
         if (!visibleEventMap.has(eventIndex)) {
             if (isZooming) {
@@ -233,8 +241,9 @@ function renderEvents() {
 
         if (isNewEvent) {
             const shouldFadeIn = !isInitialRender && !isZooming;
+            const shouldEntranceAnimate = shouldPlayEntranceAnimation && isInitialRender;
             eventDiv = document.createElement('div');
-            eventDiv.className = 'event' + (shouldFadeIn ? ' fade-in' : '');
+            eventDiv.className = 'event' + (shouldFadeIn ? ' fade-in' : '') + (shouldEntranceAnimate ? ' entrance-animation' : '');
             
             // Create the title container (positioned above the block)
             const eventTitle = document.createElement('span');
@@ -318,6 +327,18 @@ function renderEvents() {
             });
 
             eventsLayer.appendChild(eventDiv);
+            
+            // Apply staggered entrance animation delay
+            if (shouldPlayEntranceAnimation && isInitialRender && entranceAnimationEvents.length > 0) {
+                const animationIndex = entranceAnimationEvents.findIndex(([idx]) => idx === eventIndex);
+                if (animationIndex !== -1) {
+                    // Calculate delay: base delay + staggered delay per event
+                    const baseDelay = 200; // Initial delay before first event appears
+                    const staggerDelay = 30; // Delay between each event (faster for many events)
+                    const totalDelay = baseDelay + (animationIndex * staggerDelay);
+                    eventDiv.style.animationDelay = `${totalDelay}ms`;
+                }
+            }
         } else {
             if (eventDiv.classList.contains('fade-out')) {
                 eventDiv.classList.remove('fade-out');
@@ -630,6 +651,22 @@ function renderEvents() {
     }
 
     refreshMinimap({ redraw: true });
+
+    // Mark entrance animation as played after all events have animated
+    if (shouldPlayEntranceAnimation && isInitialRender && entranceAnimationInProgress) {
+        const totalAnimationTime = 200 + (entranceAnimationEvents.length * 30) + 600; // base + stagger + animation duration
+        setTimeout(() => {
+            sessionStorage.setItem('timelineEntranceAnimationPlayed', 'true');
+            shouldPlayEntranceAnimation = false;
+            entranceAnimationInProgress = false;
+            // Remove animation class from all events to clean up
+            const allEvents = eventsLayer.querySelectorAll('.event.entrance-animation');
+            allEvents.forEach(el => {
+                el.classList.remove('entrance-animation');
+                el.style.animationDelay = '';
+            });
+        }, totalAnimationTime);
+    }
 }
 
 function updateStickyEventTitles(animateAfterScroll = false, previousPositions = null) {

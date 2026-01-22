@@ -46,6 +46,11 @@ let hiddenCategories = {};
 // Track if this is the initial render (to avoid fade-in on first load)
 let isInitialRender = true;
 
+// Track if entrance animation should play (only on fresh page load/hard reload)
+let shouldPlayEntranceAnimation = !sessionStorage.getItem('timelineEntranceAnimationPlayed');
+// Flag to track if entrance animation is currently in progress
+let entranceAnimationInProgress = false;
+
 // Track if we're currently zooming (to disable animations during zoom)
 let isZooming = false;
 
