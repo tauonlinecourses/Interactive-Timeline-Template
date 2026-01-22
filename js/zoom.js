@@ -111,9 +111,6 @@ function setupWheelZoom() {
     let gestureTimeout = null;
 
     const handleWheel = (event) => {
-        // On most browsers a pinch gesture arrives as a wheel event with ctrlKey.
-        if (!event.ctrlKey && !event.metaKey) return;
-
         // Prevent the browser page zoom and keep the gesture within the timeline.
         event.preventDefault();
 

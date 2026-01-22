@@ -564,11 +564,8 @@ function updateStickyEventTitles(animateAfterScroll = false, previousPositions =
         const isTitleHidden = eventDiv.getAttribute('data-title-hidden') === 'true';
         if (isTitleHidden) return;
 
-        // Skip dynamic updating for minimum width events - they have fixed right alignment
+        // Check if this is a min-width event (they get position updates but no animation)
         const isMinWidthEvent = eventDiv.getAttribute('data-min-width') === 'true';
-        if (isMinWidthEvent) {
-            return; // Skip min-width events entirely - they don't need position updates
-        }
 
         // Get event position and width from inline styles
         const eventLeft = parseFloat(eventDiv.style.left) || 0;
@@ -601,6 +598,12 @@ function updateStickyEventTitles(animateAfterScroll = false, previousPositions =
 
         // Apply transform relative to event's left position
         const translateX = desiredTitleX - eventLeft;
+        
+        // Min-width events: update position normally without animation
+        if (isMinWidthEvent) {
+            titleEl.style.transform = `translateX(${translateX}px)`;
+            return; // Skip animation logic for min-width events
+        }
         
         // Check if position changed (only if we have previous positions and this is after scroll)
         let positionChanged = false;
