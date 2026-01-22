@@ -49,16 +49,52 @@ function setupStickyTitlesOnScroll() {
     const scrollable = getTimelineScrollable();
     if (!scrollable) return;
 
-    // Update sticky titles on scroll with requestAnimationFrame throttling
-    let scrollFramePending = false;
+    // Only hide titles that change position during scroll
+    let scrollTimeout = null;
+    let isScrolling = false;
+    let titlePositionsBeforeScroll = new Map(); // Store positions before scroll
+
+    const storeCurrentPositions = () => {
+        titlePositionsBeforeScroll.clear();
+        const allEventElements = eventsLayer.querySelectorAll('.event:not(.fade-out)');
+        allEventElements.forEach(eventDiv => {
+            const titleEl = eventDiv.querySelector('.event-title');
+            if (!titleEl) return;
+
+            // Skip if title is already hidden or is a min-width event (fixed position)
+            const isTitleHidden = eventDiv.getAttribute('data-title-hidden') === 'true';
+            const isMinWidthEvent = eventDiv.getAttribute('data-min-width') === 'true';
+            if (isTitleHidden || isMinWidthEvent) return;
+
+            const eventIndex = parseInt(eventDiv.getAttribute('data-event-index'), 10);
+            if (!isNaN(eventIndex)) {
+                // Extract current translateX value
+                const transform = titleEl.style.transform || '';
+                const match = transform.match(/translateX\(([^)]+)\)/);
+                const currentTranslateX = match ? parseFloat(match[1]) : 0;
+                titlePositionsBeforeScroll.set(eventIndex, currentTranslateX);
+            }
+        });
+    };
+
     scrollable.addEventListener('scroll', () => {
-        if (!scrollFramePending) {
-            scrollFramePending = true;
-            requestAnimationFrame(() => {
-                scrollFramePending = false;
-                updateStickyEventTitles();
-            });
+        // Store current positions when scrolling starts (only once per scroll session)
+        if (!isScrolling) {
+            isScrolling = true;
+            storeCurrentPositions();
         }
+
+        // Clear existing timeout
+        if (scrollTimeout) {
+            clearTimeout(scrollTimeout);
+        }
+
+        // After scrolling stops: check if positions changed, then hide/show only if needed
+        scrollTimeout = setTimeout(() => {
+            isScrolling = false;
+            updateStickyEventTitles(true, titlePositionsBeforeScroll); // Pass stored positions for comparison
+            titlePositionsBeforeScroll.clear(); // Reset for next scroll
+        }, 150);
     });
 }
 
@@ -508,7 +544,7 @@ function renderEvents() {
     refreshMinimap({ redraw: true });
 }
 
-function updateStickyEventTitles() {
+function updateStickyEventTitles(animateAfterScroll = false, previousPositions = null) {
     const scrollable = getTimelineScrollable();
     if (!scrollable) return;
 
@@ -518,6 +554,7 @@ function updateStickyEventTitles() {
     const padding = 10; // Padding from viewport edges
 
     const allEventElements = eventsLayer.querySelectorAll('.event:not(.fade-out)');
+    const titlesToAnimate = []; // Titles that changed position and need fade out/in
     
     allEventElements.forEach(eventDiv => {
         const titleEl = eventDiv.querySelector('.event-title');
@@ -530,6 +567,7 @@ function updateStickyEventTitles() {
         // Skip dynamic updating for minimum width events - they have fixed right alignment
         const isMinWidthEvent = eventDiv.getAttribute('data-min-width') === 'true';
         if (isMinWidthEvent) {
+            return; // Skip min-width events entirely - they don't need position updates
         }
 
         // Get event position and width from inline styles
@@ -563,7 +601,55 @@ function updateStickyEventTitles() {
 
         // Apply transform relative to event's left position
         const translateX = desiredTitleX - eventLeft;
-        titleEl.style.transform = `translateX(${translateX}px)`;
+        
+        // Check if position changed (only if we have previous positions and this is after scroll)
+        let positionChanged = false;
+        if (animateAfterScroll && previousPositions) {
+            const eventIndex = parseInt(eventDiv.getAttribute('data-event-index'), 10);
+            if (!isNaN(eventIndex) && previousPositions.has(eventIndex)) {
+                const previousTranslateX = previousPositions.get(eventIndex);
+                // Compare with small threshold to account for floating point precision
+                positionChanged = Math.abs(translateX - previousTranslateX) > 0.5;
+            } else {
+                // New event or no previous position, consider it as changed
+                positionChanged = true;
+            }
+        }
+
+        // If position changed, mark for animation
+        if (animateAfterScroll && positionChanged) {
+            titlesToAnimate.push({ eventDiv, titleEl, translateX });
+        } else {
+            // Position didn't change, update normally without animation
+            titleEl.style.transform = `translateX(${translateX}px)`;
+        }
     });
+
+    // Handle fade out/in for titles that changed position
+    if (animateAfterScroll && titlesToAnimate.length > 0) {
+        // First, fade out titles that changed position
+        titlesToAnimate.forEach(({ titleEl }) => {
+            titleEl.style.transition = 'opacity 0.2s ease-out, transform 0s';
+            titleEl.style.opacity = '0';
+        });
+
+        // Wait for fade-out to complete, then update positions and fade in
+        setTimeout(() => {
+            titlesToAnimate.forEach(({ titleEl, translateX }) => {
+                // Update position while hidden
+                titleEl.style.transform = `translateX(${translateX}px)`;
+                // Re-enable opacity transition for smooth fade-in (no transform transition)
+                titleEl.style.transition = 'opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0s';
+                // Fade in to new position
+                requestAnimationFrame(() => {
+                    titleEl.style.opacity = '1';
+                });
+                // Restore normal transition after animation completes
+                setTimeout(() => {
+                    titleEl.style.transition = '';
+                }, 400);
+            });
+        }, 200); // Wait for fade-out animation (200ms)
+    }
 }
 
