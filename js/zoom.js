@@ -71,6 +71,10 @@ function updateZoom(newYearWidth, options = {}) {
             refreshMinimap();
         }
         updateStickyEventTitles();
+        
+        // Debug: Count minwidth events after zoom change
+        const minWidthEvents = eventsLayer?.querySelectorAll('.event[data-min-width="true"]') || [];
+        console.log(`[DEBUG] Zoom changed to yearWidth: ${newYearWidth}px | MinWidth events count: ${minWidthEvents.length}`);
     }, 0);
 
     setZoomButtonStates();

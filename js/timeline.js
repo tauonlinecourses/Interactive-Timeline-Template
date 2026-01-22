@@ -180,11 +180,13 @@ function renderEvents() {
         }
     });
 
-    const maxLayers = 20; // Maximum lanes to prevent infinite growth
+    const maxLayers = 8; // Maximum lanes to prevent infinite growth
     const layerSpacing = 75;
     const eventsLayerHeight = (eventsLayer?.clientHeight || eventsLayer?.offsetHeight || 800);
     const eventHeight = 30;
     const laneOccupancy = []; // Dynamic array - lanes added as needed
+    // Track events by lane with their event index for title visibility checks
+    const laneEventsByIndex = []; // Array of arrays, each containing event indices in that lane
 
     visibleEventMap.forEach((event, eventIndex) => {
         let eventDiv = existingEventMap.get(eventIndex);
@@ -301,21 +303,34 @@ function renderEvents() {
         const adjustedWidth = Math.max(eventWidth - 10, 0);
         eventDiv.style.width = `${adjustedWidth}px`;
 
-        const titleTextEl = eventDiv.querySelector('.event-title-text');
-        if (titleTextEl) {
-            titleTextEl.style.display = adjustedWidth < minEventLabelWidth ? 'none' : '';
+        // Check if this is a minimum width event
+        // An event is a minwidth event if its adjusted width is at or below the threshold
+        const isMinWidthEvent = adjustedWidth <= 45;
+        if (isMinWidthEvent) {
+            eventDiv.setAttribute('data-min-width', 'true');
+        } else {
+            eventDiv.removeAttribute('data-min-width');
         }
-        const videoIconEl = eventDiv.querySelector('.video-icon');
-        if (videoIconEl) {
-            videoIconEl.style.display = adjustedWidth < minEventLabelWidth ? 'none' : '';
-        }
-        const categoriesEl = eventDiv.querySelector('.event-title-categories');
-        if (categoriesEl) {
-            categoriesEl.style.display = adjustedWidth < minEventLabelWidth ? 'none' : '';
+
+
+
+        // For minimum width events, set title to align right (fixed position)
+        // Use requestAnimationFrame to ensure accurate measurement after DOM update
+        if (isMinWidthEvent) {
+            const titleEl = eventDiv.querySelector('.event-title');
+            if (titleEl) {
+
+            }
         }
 
         const leftPosition = (event.start_year - minYear) * yearWidth;
         eventDiv.style.left = `${leftPosition}px`;
+
+        // Set z-index so older events (further left) appear above newer events (further right)
+        // Older events get higher z-index values
+        const baseZIndex = 1;
+        const zIndex = (maxYear - event.start_year) + baseZIndex;
+        eventDiv.style.zIndex = zIndex;
 
         // Minimum gap between events on the same lane (in pixels)
         const minEventGapPx = 35;
@@ -351,11 +366,15 @@ function renderEvents() {
         if (!laneOccupancy[laneIndex]) {
             laneOccupancy[laneIndex] = [];
         }
+        if (!laneEventsByIndex[laneIndex]) {
+            laneEventsByIndex[laneIndex] = [];
+        }
 
         laneOccupancy[laneIndex].push({
             start: event.start_year,
             end: event.end_year
         });
+        laneEventsByIndex[laneIndex].push(eventIndex);
 
         eventDiv.setAttribute('data-lane-index', laneIndex);
         eventDiv.setAttribute('data-start-year', event.start_year);
@@ -375,6 +394,67 @@ function renderEvents() {
     });
 
     activeLayersCount = laneOccupancy.filter(lane => lane && lane.length > 0).length;
+
+    // Check title visibility: hide titles for narrow events that have nearby events in the same lane
+    const minTitleWidth = 145; // Minimum width in pixels to show title
+    const nearbyYearsThreshold = 6; // Check for events within previous 5 years
+    
+    // Query all event elements from DOM (includes both existing and newly created events)
+    const allEventDivs = eventsLayer.querySelectorAll('.event:not(.fade-out)');
+    const eventDivMap = new Map();
+    allEventDivs.forEach(eventDiv => {
+        const eventIndex = parseInt(eventDiv.getAttribute('data-event-index'), 10);
+        if (!isNaN(eventIndex)) {
+            eventDivMap.set(eventIndex, eventDiv);
+        }
+    });
+    
+    visibleEventMap.forEach((event, eventIndex) => {
+        const eventDiv = eventDivMap.get(eventIndex);
+        if (!eventDiv) return;
+
+        const eventDurationYears = event.end_year - event.start_year + 1;
+        const eventWidth = eventDurationYears * yearWidth;
+        const adjustedWidth = Math.max(eventWidth - 10, 0);
+        
+        // Check if event width is below threshold
+        if (adjustedWidth < minTitleWidth) {
+            const laneIndex = parseInt(eventDiv.getAttribute('data-lane-index'), 10);
+            if (!isNaN(laneIndex) && laneEventsByIndex[laneIndex]) {
+                // Check if there's another event in the same lane within previous years
+                // Calculate gap from current event's first year to previous event's last year
+                const hasNearbyEvent = laneEventsByIndex[laneIndex].some(otherEventIndex => {
+                    if (otherEventIndex === eventIndex) return false; // Skip self
+                    const otherEvent = visibleEventMap.get(otherEventIndex);
+                    if (!otherEvent) return false;
+                    // Only check events that end before the current event starts (previous events)
+                    if (otherEvent.end_year >= event.start_year) return false;
+                    // Calculate gap: current event's first year - previous event's last year
+                    const yearGap = event.start_year - otherEvent.end_year;
+                    return yearGap > 0 && yearGap <= nearbyYearsThreshold;
+                });
+
+                // Hide title if there's a nearby event in the same lane
+                const titleEl = eventDiv.querySelector('.event-title');
+                if (titleEl) {
+                    if (hasNearbyEvent) {
+                        titleEl.style.display = 'none';
+                        eventDiv.setAttribute('data-title-hidden', 'true');
+                    } else {
+                        titleEl.style.display = '';
+                        eventDiv.removeAttribute('data-title-hidden');
+                    }
+                }
+            }
+        } else {
+            // Event is wide enough, ensure title is visible
+            const titleEl = eventDiv.querySelector('.event-title');
+            if (titleEl) {
+                titleEl.style.display = '';
+                eventDiv.removeAttribute('data-title-hidden');
+            }
+        }
+    });
 
     // Calculate push-up offset based on used lanes vs a baseline
     const baselineLayers = 9;
@@ -442,6 +522,15 @@ function updateStickyEventTitles() {
     allEventElements.forEach(eventDiv => {
         const titleEl = eventDiv.querySelector('.event-title');
         if (!titleEl) return;
+
+        // Skip updating if title is hidden
+        const isTitleHidden = eventDiv.getAttribute('data-title-hidden') === 'true';
+        if (isTitleHidden) return;
+
+        // Skip dynamic updating for minimum width events - they have fixed right alignment
+        const isMinWidthEvent = eventDiv.getAttribute('data-min-width') === 'true';
+        if (isMinWidthEvent) {
+        }
 
         // Get event position and width from inline styles
         const eventLeft = parseFloat(eventDiv.style.left) || 0;
