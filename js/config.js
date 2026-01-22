@@ -1,13 +1,14 @@
 // Shared timeline configuration, state, and DOM references.
 
 // Timeline Configuration
-let yearWidth = 15; // Default width per year in pixels
+let yearWidth = 3.57; // Default width per year in pixels (max zoom out)
 const minEventLabelWidth = 0; // Hide inline content on narrower blocks
 const condensedYearWidthThreshold = 45; // Below this we condense year labels
 // Decide which year labels to render based on the current zoom (yearWidth)
 const yearLabelIntervalLevels = [
-    { maxWidth: 40, interval: 10 }, // Far zoomed out
-    { maxWidth: 90, interval: 5 },  // Keep 5-year ticks visible longer
+    { maxWidth: 8, interval: 100 },  // Full zoom out - show centuries only (1500, 1600, 1700...)
+    { maxWidth: 40, interval: 10 },  // Far zoomed out - show decades
+    { maxWidth: 90, interval: 5 },   // Keep 5-year ticks visible longer
     { maxWidth: 130, interval: 2 },
     { maxWidth: Infinity, interval: 1 } // Fully detailed
 ];

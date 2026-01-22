@@ -1,7 +1,19 @@
 // Zoom controls for adjusting year width.
 
 const maxZoomIn = 200;
-const maxZoomOut = 12;
+const maxZoomOut = 3.57;
+
+// Preset zoom levels for discrete zoom steps
+const zoomLevels = [
+    3.57,   // Maximum zoom out (centuries view)
+    8,      // Far zoomed out (decades view)
+    15,     // Medium zoom out
+    30,     // Medium zoom
+    50,     // Medium zoom in
+    100,    // Zoomed in
+    150,    // Very zoomed in
+    200     // Maximum zoom in
+];
 
 function setZoomButtonStates() {
     if (!zoomInBtn || !zoomOutBtn) return;
@@ -80,14 +92,52 @@ function updateZoom(newYearWidth, options = {}) {
     setZoomButtonStates();
 }
 
+function getCurrentZoomLevel() {
+    // Find the closest zoom level to current yearWidth
+    let closestLevel = zoomLevels[0];
+    let minDiff = Math.abs(yearWidth - closestLevel);
+    
+    for (let i = 0; i < zoomLevels.length; i++) {
+        const diff = Math.abs(yearWidth - zoomLevels[i]);
+        if (diff < minDiff) {
+            minDiff = diff;
+            closestLevel = zoomLevels[i];
+        }
+    }
+    
+    return closestLevel;
+}
+
+function getNextZoomLevel(direction) {
+    if (direction === 'in') {
+        // Find next higher zoom level
+        for (let i = 0; i < zoomLevels.length; i++) {
+            if (zoomLevels[i] > yearWidth) {
+                return zoomLevels[i];
+            }
+        }
+        // If already at or past the last level, stay at max
+        return maxZoomIn;
+    } else {
+        // Find next lower zoom level (search from end)
+        for (let i = zoomLevels.length - 1; i >= 0; i--) {
+            if (zoomLevels[i] < yearWidth) {
+                return zoomLevels[i];
+            }
+        }
+        // If already at or past the first level, stay at min
+        return maxZoomOut;
+    }
+}
+
 function zoomIn() {
-    const newWidth = Math.min(yearWidth + 20, maxZoomIn);
-    updateZoom(newWidth);
+    const nextLevel = getNextZoomLevel('in');
+    updateZoom(nextLevel);
 }
 
 function zoomOut() {
-    const newWidth = Math.max(yearWidth - 20, maxZoomOut);
-    updateZoom(newWidth);
+    const nextLevel = getNextZoomLevel('out');
+    updateZoom(nextLevel);
 }
 
 function zoomToMax() {

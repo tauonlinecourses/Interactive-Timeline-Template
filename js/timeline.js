@@ -153,7 +153,9 @@ function renderYearLabels() {
             ? year % yearLabelInterval === 0 // Align to round numbers (e.g., 1910, 1920)
             : (year - minYear) % yearLabelInterval === 0;
 
-        if (!isBoundaryYear && !matchesInterval) {
+        // At full zoom out (centuries), skip boundary years that don't match the interval
+        const showBoundaryYear = isBoundaryYear && yearLabelInterval < 100;
+        if (!showBoundaryYear && !matchesInterval) {
             continue;
         }
 
@@ -429,6 +431,53 @@ function renderEvents() {
         }
     });
 
+    // Post-process top layer events at full zoom out to space them from right to left
+    const topLayerIndex = maxLayers - 1;
+    const isFullZoomOutForLanes = yearWidth <= 8;
+    
+    if (isFullZoomOutForLanes && laneEventsByIndex[topLayerIndex] && laneEventsByIndex[topLayerIndex].length > 1) {
+        const topLayerMinGapPx = 50;
+        
+        // Collect all top layer events with their info
+        const topLayerEvents = laneEventsByIndex[topLayerIndex].map(eventIndex => {
+            const event = visibleEventMap.get(eventIndex);
+            const eventDiv = eventsLayer.querySelector(`.event[data-event-index="${eventIndex}"]`);
+            const eventDurationYears = event.end_year - event.start_year + 1;
+            const eventWidthPx = Math.max(eventDurationYears * yearWidth - 10, 0);
+            const naturalLeftPx = (event.start_year - minYear) * yearWidth;
+            return { eventIndex, event, eventDiv, eventWidthPx, naturalLeftPx };
+        });
+        
+        // Sort by start year descending (rightmost/newest first)
+        topLayerEvents.sort((a, b) => b.event.start_year - a.event.start_year);
+        
+        // Process from right to left - keep rightmost in place, shift others left
+        let leftmostAllowedRight = null; // The leftmost point where the next event's right edge can be
+        
+        for (const item of topLayerEvents) {
+            const { eventDiv, eventWidthPx, naturalLeftPx } = item;
+            
+            if (leftmostAllowedRight === null) {
+                // First (rightmost) event stays in place
+                leftmostAllowedRight = naturalLeftPx - topLayerMinGapPx;
+                // Position is already set, no change needed
+            } else {
+                // Calculate where this event's right edge would be naturally
+                const naturalRightPx = naturalLeftPx + eventWidthPx;
+                
+                if (naturalRightPx > leftmostAllowedRight) {
+                    // Need to shift this event to the left
+                    const newLeftPx = Math.max(0, leftmostAllowedRight - eventWidthPx);
+                    eventDiv.style.left = `${newLeftPx}px`;
+                    leftmostAllowedRight = newLeftPx - topLayerMinGapPx;
+                } else {
+                    // Event already has enough space, keep natural position
+                    leftmostAllowedRight = naturalLeftPx - topLayerMinGapPx;
+                }
+            }
+        }
+    }
+
     activeLayersCount = laneOccupancy.filter(lane => lane && lane.length > 0).length;
 
     // Check title visibility: hide titles for narrow events that have nearby events in the same lane
@@ -445,6 +494,9 @@ function renderEvents() {
         }
     });
     
+    // Check if we're at full zoom out (centuries view)
+    const isFullZoomOut = yearWidth <= 8;
+    
     visibleEventMap.forEach((event, eventIndex) => {
         const eventDiv = eventDivMap.get(eventIndex);
         if (!eventDiv) return;
@@ -452,6 +504,42 @@ function renderEvents() {
         const eventDurationYears = event.end_year - event.start_year + 1;
         const eventWidth = eventDurationYears * yearWidth;
         const adjustedWidth = Math.max(eventWidth - 10, 0);
+        
+        // At full zoom out, hide title if there's an event within 100px before it in the same lane
+        if (isFullZoomOut) {
+            const laneIndex = parseInt(eventDiv.getAttribute('data-lane-index'), 10);
+            const thisLeftPx = parseFloat(eventDiv.style.left) || 0;
+            const maxGapPxForTitle = 100;
+            
+            if (!isNaN(laneIndex) && laneEventsByIndex[laneIndex]) {
+                const hasCloseEventBefore = laneEventsByIndex[laneIndex].some(otherEventIndex => {
+                    if (otherEventIndex === eventIndex) return false; // Skip self
+                    const otherEventDiv = eventDivMap.get(otherEventIndex);
+                    if (!otherEventDiv) return false;
+                    
+                    const otherLeftPx = parseFloat(otherEventDiv.style.left) || 0;
+                    const otherWidthPx = parseFloat(otherEventDiv.style.width) || 0;
+                    const otherRightPx = otherLeftPx + otherWidthPx;
+                    
+                    // Check if this other event ends before our event starts (is before us)
+                    // and the gap between its right edge and our left edge is <= 100px
+                    if (otherRightPx <= thisLeftPx) {
+                        const gapPx = thisLeftPx - otherRightPx;
+                        return gapPx <= maxGapPxForTitle;
+                    }
+                    return false;
+                });
+                
+                if (hasCloseEventBefore) {
+                    const titleEl = eventDiv.querySelector('.event-title');
+                    if (titleEl) {
+                        titleEl.style.display = 'none';
+                        eventDiv.setAttribute('data-title-hidden', 'true');
+                    }
+                    return; // Skip further title visibility checks
+                }
+            }
+        }
         
         // Check if event width is below threshold
         if (adjustedWidth < minTitleWidth) {

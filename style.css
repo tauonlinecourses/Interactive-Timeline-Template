@@ -1382,6 +1382,163 @@ body {
     }
 }
 
+/* ==================== MODAL HEIGHT-RESPONSIVE STYLES ==================== */
+/* Prioritize description text area on smaller viewport heights (zoom or small screens) */
+
+/* Ensure description area always has a minimum usable height */
+.modal-body {
+    min-height: 150px;
+}
+
+/* Medium-small viewport height: reduce hero image */
+@media (max-height: 700px) {
+    .modal-hero {
+        height: 120px;
+        flex-shrink: 1;
+    }
+    
+    .modal-inner {
+        padding: 16px 32px;
+    }
+    
+    .modal-header {
+        margin-bottom: 12px;
+    }
+    
+    .modal-footer {
+        margin-top: 16px;
+        padding-top: 14px;
+    }
+}
+
+/* Small viewport height: further reduce hero, compact spacing */
+@media (max-height: 600px) {
+    .modal-hero {
+        height: 80px;
+    }
+    
+    .modal-inner {
+        padding: 12px 24px;
+    }
+    
+    .modal-title {
+        font-size: 22px;
+    }
+    
+    .modal-header {
+        margin-bottom: 8px;
+        gap: 4px;
+    }
+    
+    .modal-footer {
+        margin-top: 12px;
+        padding-top: 10px;
+        gap: 12px;
+    }
+    
+    .modal-body {
+        gap: 20px;
+        min-height: 120px;
+    }
+    
+    .modal-description-text {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+}
+
+/* Very small viewport height: hide hero completely to maximize text space */
+@media (max-height: 500px) {
+    .modal-hero {
+        display: none;
+    }
+    
+    .modal-close-btn {
+        position: fixed;
+        top: auto;
+        left: auto;
+        bottom: 12px;
+        right: 12px;
+        z-index: 2010;
+        background: rgba(0, 0, 0, 0.9);
+    }
+    
+    .modal-content {
+        max-height: 98vh;
+    }
+    
+    .modal-inner {
+        padding: 10px 20px;
+    }
+    
+    .modal-title {
+        font-size: 20px;
+    }
+    
+    .modal-body {
+        min-height: 100px;
+    }
+    
+    .modal-footer {
+        margin-top: 8px;
+        padding-top: 8px;
+        gap: 8px;
+    }
+    
+    .modal-nav-btn {
+        padding: 6px 4px;
+        font-size: 11px;
+        width: 90px;
+    }
+}
+
+/* Extremely constrained height: absolute minimal UI */
+@media (max-height: 400px) {
+    .modal-hero {
+        display: none;
+    }
+    
+    .modal-inner {
+        padding: 8px 16px;
+    }
+    
+    .modal-header {
+        margin-bottom: 6px;
+    }
+    
+    .modal-title {
+        font-size: 18px;
+    }
+    
+    .modal-years {
+        font-size: 14px;
+    }
+    
+    .modal-category-circle {
+        width: 10px;
+        height: 10px;
+    }
+    
+    .modal-body {
+        min-height: 80px;
+        gap: 12px;
+    }
+    
+    .modal-description-text {
+        font-size: 13px;
+        line-height: 1.4;
+    }
+    
+    .modal-footer {
+        margin-top: 6px;
+        padding-top: 6px;
+    }
+    
+    .modal-links-section {
+        display: none;
+    }
+}
+
 /* ==================== INFO MODAL STYLES ==================== */
 
 .info-modal .modal-close-btn {
