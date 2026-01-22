@@ -656,14 +656,35 @@ function renderEvents() {
     if (shouldPlayEntranceAnimation && isInitialRender && entranceAnimationInProgress) {
         const totalAnimationTime = 200 + (entranceAnimationEvents.length * 30) + 600; // base + stagger + animation duration
         setTimeout(() => {
-            sessionStorage.setItem('timelineEntranceAnimationPlayed', 'true');
             shouldPlayEntranceAnimation = false;
             entranceAnimationInProgress = false;
-            // Remove animation class from all events to clean up
+            
+            // Remove animation class from all events
             const allEvents = eventsLayer.querySelectorAll('.event.entrance-animation');
             allEvents.forEach(el => {
                 el.classList.remove('entrance-animation');
                 el.style.animationDelay = '';
+            });
+            
+            // Update sticky title positions first (while titles are still hidden)
+            updateStickyEventTitles();
+            
+            // Now reveal all titles with a smooth fade-in
+            requestAnimationFrame(() => {
+                const allTitles = eventsLayer.querySelectorAll('.event .event-title');
+                allTitles.forEach((titleEl, index) => {
+                    titleEl.style.visibility = 'visible';
+                    titleEl.style.transition = 'opacity 0.4s ease-out';
+                    titleEl.style.opacity = '0';
+                    // Stagger the title fade-ins slightly
+                    setTimeout(() => {
+                        titleEl.style.opacity = '1';
+                        // Clean up inline styles after animation
+                        setTimeout(() => {
+                            titleEl.style.transition = '';
+                        }, 400);
+                    }, index * 15);
+                });
             });
         }, totalAnimationTime);
     }

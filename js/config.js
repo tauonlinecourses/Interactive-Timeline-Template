@@ -46,8 +46,8 @@ let hiddenCategories = {};
 // Track if this is the initial render (to avoid fade-in on first load)
 let isInitialRender = true;
 
-// Track if entrance animation should play (only on fresh page load/hard reload)
-let shouldPlayEntranceAnimation = !sessionStorage.getItem('timelineEntranceAnimationPlayed');
+// Track if entrance animation should play (plays on every page load)
+let shouldPlayEntranceAnimation = true;
 // Flag to track if entrance animation is currently in progress
 let entranceAnimationInProgress = false;
 
