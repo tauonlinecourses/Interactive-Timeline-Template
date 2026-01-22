@@ -54,18 +54,20 @@ function updateZoom(newYearWidth, options = {}) {
     setTimeout(() => {
         isZooming = false;
         if (anchorInfo && anchorInfo.type !== 'center' && scrollable) {
-            const newScrollWidth = scrollable.scrollWidth;
-            const maxScroll = newScrollWidth - scrollable.clientWidth;
-
+            // Calculate scroll position based on actual content width (timelineWidth), not scrollWidth
+            // This ensures the scroll position stays within content bounds
+            const timelineWidth = getTimelineWidth();
+            const maxContentScroll = Math.max(0, timelineWidth - scrollable.clientWidth);
+            
             let newScrollLeft = anchorInfo.type === 'left'
-                ? anchorInfo.fraction * newScrollWidth
-                : anchorInfo.fraction * newScrollWidth - scrollable.clientWidth;
+                ? anchorInfo.fraction * timelineWidth
+                : anchorInfo.fraction * timelineWidth - scrollable.clientWidth;
 
             if (Number.isNaN(newScrollLeft)) {
                 newScrollLeft = scrollable.scrollLeft;
             }
 
-            scrollable.scrollLeft = Math.max(0, Math.min(newScrollLeft, maxScroll));
+            scrollable.scrollLeft = Math.max(0, Math.min(newScrollLeft, maxContentScroll));
             refreshMinimap();
         }
         updateStickyEventTitles();

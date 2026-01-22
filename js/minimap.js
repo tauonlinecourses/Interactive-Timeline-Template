@@ -69,8 +69,20 @@ function updateMinimapViewport() {
     if (!minimapViewport || !minimapCanvas) return;
 
     if (minimapResizingSide && minimapResizePreview) {
-        minimapViewport.style.width = `${minimapResizePreview.width}px`;
-        minimapViewport.style.left = `${minimapResizePreview.left}px`;
+        // Clamp preview to canvas bounds
+        const canvasDisplayWidth = minimapCanvas.clientWidth || minimapCanvas.width;
+        let previewLeft = minimapResizePreview.left;
+        let previewWidth = minimapResizePreview.width;
+        const previewRight = previewLeft + previewWidth;
+        if (previewRight > canvasDisplayWidth) {
+            previewLeft = Math.max(0, canvasDisplayWidth - previewWidth);
+        }
+        if (previewLeft < 0) {
+            previewLeft = 0;
+            previewWidth = Math.min(previewWidth, canvasDisplayWidth);
+        }
+        minimapViewport.style.width = `${previewWidth}px`;
+        minimapViewport.style.left = `${previewLeft}px`;
         return;
     }
 
@@ -81,8 +93,26 @@ function updateMinimapViewport() {
     if (!timelineWidth) return;
 
     const scaleX = minimapCanvas.width / timelineWidth;
-    const viewportWidth = Math.max(scrollable.clientWidth * scaleX, 4);
-    const viewportLeft = scrollable.scrollLeft * scaleX;
+    let viewportWidth = Math.max(scrollable.clientWidth * scaleX, 4);
+    
+    // Clamp scrollLeft to actual content width (timelineWidth) to prevent viewport from extending beyond canvas
+    // The scrollWidth can be larger than timelineWidth due to effectiveWidth calculation
+    const maxContentScroll = Math.max(0, timelineWidth - scrollable.clientWidth);
+    const clampedScrollLeft = Math.min(scrollable.scrollLeft, maxContentScroll);
+    let viewportLeft = clampedScrollLeft * scaleX;
+
+    // Clamp viewport to stay within canvas bounds
+    // Use clientWidth (displayed width) instead of width (internal pixel width) for clamping
+    const canvasDisplayWidth = minimapCanvas.clientWidth || minimapCanvas.width;
+    const maxViewportRight = canvasDisplayWidth;
+    const viewportRight = viewportLeft + viewportWidth;
+    if (viewportRight > maxViewportRight) {
+        viewportLeft = Math.max(0, maxViewportRight - viewportWidth);
+    }
+    if (viewportLeft < 0) {
+        viewportLeft = 0;
+        viewportWidth = Math.min(viewportWidth, maxViewportRight);
+    }
 
     minimapViewport.style.width = `${viewportWidth}px`;
     minimapViewport.style.left = `${viewportLeft}px`;
@@ -131,7 +161,8 @@ function resizeMinimapViewport(side, clientX) {
         desiredWidth = anchorRight - newLeft;
     } else {
         const anchorLeft = currentLeft;
-        const newRight = Math.max(Math.min(pointerX, minimapCanvas.width), anchorLeft + bounds.minWidth);
+        const canvasDisplayWidth = minimapCanvas.clientWidth || minimapCanvas.width;
+        const newRight = Math.max(Math.min(pointerX, canvasDisplayWidth), anchorLeft + bounds.minWidth);
         desiredWidth = newRight - anchorLeft;
     }
 
@@ -141,14 +172,30 @@ function resizeMinimapViewport(side, clientX) {
     const newYearWidthRaw = (scrollable.clientWidth * minimapCanvas.width) / (desiredWidth * yearRange);
     const newYearWidth = Math.min(Math.max(newYearWidthRaw, maxZoomOut), maxZoomIn);
 
-    const scrollWidth = scrollable.scrollWidth;
+    // Calculate anchor fraction based on actual content width (timelineWidth), not scrollWidth
+    // This ensures the anchor position stays within the content bounds
+    const maxContentScroll = Math.max(0, timelineWidth - scrollable.clientWidth);
+    const clampedScrollLeft = Math.min(scrollable.scrollLeft, maxContentScroll);
     const anchorFraction = oppositeSide === 'left'
-        ? scrollable.scrollLeft / scrollWidth
-        : (scrollable.scrollLeft + scrollable.clientWidth) / scrollWidth;
+        ? (timelineWidth > 0 ? clampedScrollLeft / timelineWidth : 0)
+        : (timelineWidth > 0 ? (clampedScrollLeft + scrollable.clientWidth) / timelineWidth : 0);
 
-    const previewLeft = oppositeSide === 'left'
+    let previewLeft = oppositeSide === 'left'
         ? currentLeft
         : (currentLeft + currentWidth - desiredWidth);
+
+    // Clamp viewport to stay within canvas bounds
+    // Use clientWidth (displayed width) instead of width (internal pixel width) for clamping
+    const canvasDisplayWidth = minimapCanvas.clientWidth || minimapCanvas.width;
+    const maxViewportRight = canvasDisplayWidth;
+    const previewRight = previewLeft + desiredWidth;
+    if (previewRight > maxViewportRight) {
+        previewLeft = Math.max(0, maxViewportRight - desiredWidth);
+    }
+    if (previewLeft < 0) {
+        previewLeft = 0;
+        desiredWidth = Math.min(desiredWidth, maxViewportRight);
+    }
 
     minimapResizePreview = {
         width: desiredWidth,
@@ -282,8 +329,11 @@ function handleMinimapNavigation(clientX) {
     const targetCenter = ratio * timelineWidth;
     const targetScrollLeft = targetCenter - scrollable.clientWidth / 2;
     const maxScroll = scrollable.scrollWidth - scrollable.clientWidth;
+    // Clamp to actual content width to prevent viewport from extending beyond minimap canvas
+    const maxContentScroll = Math.max(0, timelineWidth - scrollable.clientWidth);
+    const actualMaxScroll = Math.max(0, Math.min(maxContentScroll, maxScroll));
 
-    scrollable.scrollLeft = Math.max(0, Math.min(targetScrollLeft, maxScroll));
+    scrollable.scrollLeft = Math.max(0, Math.min(targetScrollLeft, actualMaxScroll));
     refreshMinimap();
 }
 
