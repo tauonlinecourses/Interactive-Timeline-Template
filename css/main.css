@@ -10,3 +10,4 @@
 @import 'utilities.css';
 @import 'modal.css';
 @import 'info-modal.css';
+@import 'mobile.css'; /* Mobile responsive styles - loaded last to override desktop styles */

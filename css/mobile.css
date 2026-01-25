@@ -1,0 +1,353 @@
+/* ============================================
+   MOBILE RESPONSIVE STYLES
+   ============================================
+   
+   Breakpoints:
+   - Mobile: < 768px
+   - Tablet: 768px - 1024px
+   - Desktop: > 1024px
+   
+   This file contains mobile-specific overrides
+   for all components. Desktop styles are the base.
+   ============================================ */
+
+/* ==================== BASE MOBILE STYLES ==================== */
+@media (max-width: 767px) {
+    body {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}
+
+/* ==================== TIMELINE MOBILE STYLES ==================== */
+@media (max-width: 767px) {
+    .timeline-container {
+        height: 100vh; /* Full viewport height for mobile */
+        margin-top: 0;
+        transform: none; /* Ensure no transform that could affect fixed positioning */
+        will-change: auto;
+    }
+    
+    .timeline-scrollable {
+        /* Better touch scrolling on mobile */
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+        transform: none;
+        will-change: auto;
+        margin-top: 70px;
+    }
+    
+    .events-layer {
+        top: 80px; /* Below categories menu */
+        bottom: 160px; /* Above timeline line area - events end higher */
+        height: auto; /* Let top/bottom define height */
+    }
+}
+
+/* ==================== CATEGORIES MENU MOBILE ==================== */
+@media (max-width: 767px) {
+    .categories-menu {
+        top: 30px; /* Position below header elements */
+        padding: 4px 6px;
+        gap: 4px;
+        max-width: 100%;
+        /* Ensure horizontal layout */
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        /* Allow horizontal scrolling if needed */
+        overflow-x: auto;
+        overflow-y: visible;
+        -webkit-overflow-scrolling: touch;
+        /* Hide scrollbar but keep functionality */
+        scrollbar-width: none;
+    }
+    
+    .categories-menu::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .category-btn {
+        /* Smaller buttons for mobile - compact layout */
+        width: auto;
+        min-width: 55px;
+        max-width: 85px;
+        height: 22px;
+        font-size: 14px;
+        padding: 0 6px;
+        /* Slightly smaller skew for compact look */
+        transform: skewX(-10deg);
+    }
+    
+    .category-btn span {
+        transform: skewX(10deg);
+    }
+}
+
+/* ==================== TIMELINE BOTTOM BAR MOBILE ==================== */
+@media (max-width: 767px) {
+    .timeline-bottom-bar {
+        width: calc(100% - 16px);
+        padding: 8px;
+        gap: 8px;
+        flex-direction: column;
+        align-items: stretch;
+        bottom: 10px;
+    }
+    
+    /* Hide minimap on mobile */
+    .timeline-minimap {
+        display: none !important;
+    }
+    
+    .zoom-control-group {
+        flex-direction: row;
+        justify-content: center;
+        gap: 12px;
+    }
+}
+
+/* ==================== ZOOM CONTROLS MOBILE ==================== */
+@media (max-width: 767px) {
+    .zoom-btn {
+        /* Larger touch targets */
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        min-height: 48px;
+    }
+    
+    .zoom-icon {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+/* ==================== EVENTS MOBILE STYLES ==================== */
+@media (max-width: 767px) {
+    .event {
+        /* Larger touch targets */
+        min-height: 30px;
+    }
+    
+    .event-block {
+        height: 28px; /* Slightly taller for easier tapping */
+        min-width: 40px; /* Minimum width for touch */
+    }
+    
+    .event-title {
+        /* Adjust font size if needed */
+        font-size: 12px;
+    }
+    
+    /* Hide tooltip preview card on mobile */
+    .event-tooltip {
+        display: none !important;
+    }
+}
+
+/* ==================== TIMELINE LINE MOBILE ==================== */
+@media (max-width: 767px) {
+    .timeline-line {
+        position: absolute;
+        top: calc(100vh - 120px); /* Position closer to zoom buttons */
+        left: 0;
+        z-index: 100;
+    }
+    
+    .reflection-layer {
+        display: none; /* Hide reflection on mobile for cleaner look */
+    }
+}
+
+/* ==================== YEAR LABELS MOBILE ==================== */
+@media (max-width: 767px) {
+    .years-layer {
+        position: absolute;
+        top: calc(100vh - 95px); /* Position below timeline line, above zoom buttons */
+        left: 0;
+        z-index: 99;
+    }
+    
+    .year-label {
+        font-size: 16px;
+    }
+}
+
+/* ==================== BRAND & WATERMARK MOBILE ==================== */
+@media (max-width: 767px) {
+    .brand-sticker {
+        width: 80px;
+        height: auto;
+        top: 10px;
+        left: auto;
+        right: 10px;
+        transform: none; /* Remove centered transform */
+    }
+    
+    .brand-sticker:hover {
+        transform: translate3d(0, 2px, 0) scale(1.02) rotate(3deg);
+    }
+    
+    .watermark-logos {
+        top: auto;
+        bottom: 10px;
+        left: 10px;
+        opacity: 0.9; /* More subtle on mobile */
+    }
+    
+    .watermark-logos img {
+        max-width: 50px;
+    }
+}
+
+/* ==================== INFO BUTTON MOBILE ==================== */
+@media (max-width: 767px) {
+    .info-button {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        top: 10px;
+        left: 10px;
+    }
+}
+
+/* ==================== MODAL MOBILE STYLES ==================== */
+/* Note: Some modal styles already exist in modal.css, 
+   but we'll add mobile-specific enhancements here */
+
+@media (max-width: 767px) {
+    .modal-content {
+        width: 95%;
+        max-width: none;
+        max-height: 95vh;
+        margin: 2.5vh auto;
+        border-radius: 12px;
+    }
+    
+    .modal-hero {
+        height: 150px;
+    }
+    
+    .modal-inner {
+        padding: 16px;
+    }
+    
+    .modal-title {
+        font-size: 20px;
+        line-height: 1.3;
+    }
+    
+    .modal-nav-btn {
+        padding: 14px 20px;
+        font-size: 14px;
+        min-width: 110px;
+        /* Better touch targets */
+        min-height: 44px;
+    }
+    
+    .modal-navigation {
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    /* Stack modal body content vertically on mobile */
+    .modal-body {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .modal-videos {
+        width: 100%;
+        position: static;
+    }
+}
+
+/* ==================== INFO MODAL MOBILE ==================== */
+@media (max-width: 767px) {
+    .info-modal-content {
+        width: 95%;
+        max-width: none;
+        max-height: 95vh;
+    }
+    
+    .info-modal-body {
+        flex-direction: column;
+    }
+    
+    .info-modal-video-section {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    
+    .info-modal-content-sections {
+        width: 100%;
+    }
+}
+
+/* ==================== UTILITY MOBILE STYLES ==================== */
+@media (max-width: 767px) {
+    /* Ensure touch-friendly spacing */
+    button, a {
+        min-height: 44px; /* Apple's recommended minimum touch target */
+    }
+    
+    /* Prevent text selection on UI elements during touch */
+    .category-btn,
+    .zoom-btn,
+    .modal-nav-btn {
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+}
+
+/* ==================== TABLET STYLES (768px - 1024px) ==================== */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .timeline-container {
+        height: 700px;
+    }
+    
+    .events-layer {
+        height: 600px;
+    }
+    
+    .timeline-bottom-bar {
+        width: 80vw;
+    }
+    
+    .category-btn {
+        width: 135px;
+    }
+}
+
+/* ==================== LANDSCAPE MOBILE ORIENTATION ==================== */
+@media (max-width: 767px) and (orientation: landscape) {
+    .timeline-container {
+        height: 100vh;
+    }
+    
+    .events-layer {
+        top: 70px; /* Smaller top margin in landscape */
+        bottom: 120px; /* Above timeline line */
+        height: auto;
+    }
+    
+    .timeline-line {
+        top: calc(100vh - 90px);
+    }
+    
+    .years-layer {
+        top: calc(100vh - 70px);
+    }
+    
+    .categories-menu {
+        top: 30px;
+        padding: 4px 6px;
+        max-width: 100%;
+    }
+    
+    .modal-content {
+        max-height: 90vh;
+    }
+}

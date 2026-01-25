@@ -77,8 +77,6 @@ function mapCategoriesToColors() {
         categoryColors[category] = colorPalette[colorIndex];
         hiddenCategories[category] = false;
     });
-
-    console.log('Category to color mapping:', categoryColors);
 }
 
 /**
