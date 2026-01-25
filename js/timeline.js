@@ -227,7 +227,8 @@ function renderEvents() {
     });
 
     const maxLayers = 8; // Maximum lanes to prevent infinite growth
-    const layerSpacing = 75;
+    const isMobile = window.innerWidth < 768;
+    const layerSpacing = isMobile ? 65 : 75;
     const eventsLayerHeight = (eventsLayer?.clientHeight || eventsLayer?.offsetHeight || 800);
     const eventHeight = 30;
     const laneOccupancy = []; // Dynamic array - lanes added as needed
@@ -392,7 +393,8 @@ function renderEvents() {
         eventDiv.style.zIndex = zIndex;
 
         // Minimum gap between events on the same lane (in pixels)
-        const minEventGapPx = 35;
+        // Use larger gap on mobile for better touch interaction
+        const minEventGapPx = isMobile ? 50 : 35;
         // Convert pixel gap to year-equivalent buffer
         const gapInYears = minEventGapPx / yearWidth;
 
@@ -457,7 +459,9 @@ function renderEvents() {
     const isFullZoomOutForLanes = yearWidth <= 8;
     
     if (isFullZoomOutForLanes && laneEventsByIndex[topLayerIndex] && laneEventsByIndex[topLayerIndex].length > 1) {
-        const topLayerMinGapPx = 50;
+        // Use larger gap on mobile for better touch interaction
+        const isMobileForTopLayer = window.innerWidth < 768;
+        const topLayerMinGapPx = isMobileForTopLayer ? 75 : 50;
         
         // Collect all top layer events with their info
         const topLayerEvents = laneEventsByIndex[topLayerIndex].map(eventIndex => {
@@ -630,8 +634,6 @@ function renderEvents() {
     const timelineBottomBar = document.querySelector('.timeline-bottom-bar');
 
     // Check if we're on mobile - skip JS positioning and let CSS handle it
-    const isMobile = window.innerWidth < 768;
-
     if (!isMobile) {
         // Desktop only: dynamically position timeline elements based on active layers
         const baseTimelineLineTop = 780;

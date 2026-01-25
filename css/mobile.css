@@ -317,8 +317,8 @@
 
 /* ==================== UTILITY MOBILE STYLES ==================== */
 @media (max-width: 767px) {
-    /* Ensure touch-friendly spacing (exclude modal-nav-btn and modal-close-btn which have fixed sizes) */
-    button:not(.modal-nav-btn):not(.modal-close-btn), a {
+    /* Ensure touch-friendly spacing (exclude modal-nav-btn, modal-close-btn, and video-icon which have fixed sizes) */
+    button:not(.modal-nav-btn):not(.modal-close-btn), a:not(.video-icon) {
         min-height: 44px; /* Apple's recommended minimum touch target */
     }
     
