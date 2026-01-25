@@ -39,80 +39,122 @@ We use a **desktop-first** approach with mobile overrides:
 
 1. **Larger Touch Targets**
    - Minimum 44px × 44px (Apple's recommendation)
-   - Applied to buttons, category filters, zoom controls
+   - Applied to buttons, zoom controls (48px × 48px)
+   - Modal navigation buttons: 110px × 44px fixed size
+   - Exception: Category buttons and modal nav/close buttons have custom sizing
 
 2. **Touch-Friendly Spacing**
    - Increased padding and gaps
    - Prevent accidental taps
+   - Touch highlight disabled on interactive elements (`-webkit-tap-highlight-color: transparent`)
 
-3. **Touch Event Support** (Future Enhancement)
-   - Current: Uses mouse events (works on mobile but not optimal)
-   - Recommended: Add `touchstart`, `touchmove`, `touchend` for better mobile dragging
+3. **Native Touch Scrolling**
+   - Uses `touch-action: pan-x` on timeline for native single-finger horizontal scrolling
+   - Pinch-to-zoom handled separately by JavaScript
 
 ### Layout Adjustments
 
-1. **Timeline Height**
-   - Desktop: 850px
-   - Mobile: 600px (saves vertical space)
+1. **Timeline Container**
+   - Desktop: Fixed height (850px)
+   - Mobile: Full viewport height (`100vh`) for immersive experience
 
-2. **Categories Menu**
-   - Horizontal scrollable on mobile
-   - Smaller buttons (120px vs 150px)
-   - Positioned higher (60px vs 100px)
+2. **Events Layer**
+   - Viewport-relative positioning: `top: 60px` (below categories)
+   - Height: `calc(100vh - 60px - 150px)` to fit between categories and timeline line
 
-3. **Bottom Bar**
-   - Stacks vertically on mobile
-   - Minimap first, then controls
-   - Full width with padding
+3. **Timeline Line & Year Labels**
+   - Viewport-relative: Line at `calc(100vh - 210px)`, years at `calc(100vh - 200px)`
+   - CSS controls positioning on mobile (JS clears inline styles)
 
-4. **Modals**
-   - 95% width on mobile
+4. **Categories Menu**
+   - Positioned at `top: 10px`
+   - Compact buttons: 55-85px width, 22px height
+   - Horizontal scrollable with flex-wrap
+   - Hidden scrollbar with preserved scroll functionality
+
+5. **Bottom Bar & Minimap**
+   - Bottom bar stacks vertically
+   - **Minimap is hidden on mobile** for cleaner interface
+   - Zoom controls centered horizontally
+
+6. **Modals**
+   - Full screen (100% width, 95% height) on mobile
+   - No border radius, no animation
    - Stacked content (videos above descriptions)
-   - Larger close buttons
+   - Fixed-size navigation buttons (110px × 44px)
+   - Hero section: 150px height (100px in landscape)
+
+7. **Brand & Watermark**
+   - Brand sticker: 80px width, positioned top-right
+   - Watermark logos: Bottom-left, 50px max width
+
+8. **Hidden Elements on Mobile**
+   - Event tooltips (preview cards)
+   - Reflection layer
+   - Minimap
 
 ### Performance
 
 1. **Smooth Scrolling**
-   - `-webkit-overflow-scrolling: touch` for iOS
+   - `-webkit-overflow-scrolling: touch` for iOS momentum scrolling
    - `overscroll-behavior-x: contain` to prevent scroll chaining
 
-2. **Reduced Animations**
-   - Consider reducing animation complexity on mobile
-   - Use `prefers-reduced-motion` media query
+2. **Optimized Rendering**
+   - `will-change: auto` on mobile (vs transforms on desktop)
+   - No transforms on timeline container to preserve fixed positioning
+
+## JavaScript Integration
+
+The `timeline.js` includes mobile-specific logic:
+
+```javascript
+// Mobile detection
+const isMobile = window.innerWidth < 768;
+
+if (!isMobile) {
+    // Desktop: JS calculates dynamic positioning
+    timelineLine.style.top = `${calculated}px`;
+} else {
+    // Mobile: Clear inline styles, let CSS media queries take effect
+    timelineLine.style.top = '';
+}
+```
+
+This approach ensures:
+- CSS media queries control mobile layout
+- No conflicting inline styles from JavaScript
+- Clean separation between desktop (JS-positioned) and mobile (CSS-positioned)
 
 ## Implementation Status
 
 ### ✅ Completed
 - [x] Mobile stylesheet created (`css/mobile.css`)
 - [x] Import added to `main.css`
-- [x] Base mobile styles for all components
+- [x] Full viewport height timeline
+- [x] Viewport-relative positioning for timeline elements
 - [x] Touch-friendly button sizes
-- [x] Responsive modals
+- [x] Native touch scrolling via `touch-action: pan-x`
+- [x] Full-screen responsive modals
 - [x] Landscape orientation support
+- [x] Hidden minimap, tooltips, and reflection on mobile
+- [x] JS/CSS coordination for mobile layout
+- [x] Compact category buttons with flex-wrap
 
 ### 🔄 Recommended Enhancements
 
-1. **Touch Event Support**
-   ```javascript
-   // In timeline.js - add touch event listeners
-   dragSurface.addEventListener('touchstart', startDrag, { passive: false });
-   dragSurface.addEventListener('touchmove', handleDrag, { passive: false });
-   dragSurface.addEventListener('touchend', endDrag);
-   ```
+1. **Pinch-to-Zoom Improvements**
+   - Currently works via native browser pinch or wheel events
+   - Consider adding explicit gesture detection for smoother control
 
-2. **Pinch-to-Zoom**
-   - Currently uses wheel events (works on some mobile browsers)
-   - Consider adding explicit pinch gesture detection
-
-3. **Swipe Navigation**
+2. **Swipe Navigation**
    - Add swipe gestures for modal navigation
    - Swipe left/right to navigate between events
 
-4. **Collapsible Categories**
+3. **Collapsible Categories**
    - On very small screens, make categories menu collapsible
    - Add a hamburger menu or "Show Categories" button
 
-5. **Vertical Timeline Option**
+4. **Vertical Timeline Option**
    - Consider a vertical timeline layout for mobile
    - Could be a toggle or automatic on very small screens
 
@@ -122,12 +164,24 @@ We use a **desktop-first** approach with mobile overrides:
 - [ ] Test in landscape and portrait orientations
 - [ ] Verify touch targets are large enough
 - [ ] Check modal scrolling on small screens
-- [ ] Test timeline dragging/scrolling
+- [ ] Test timeline horizontal scrolling (single finger)
 - [ ] Verify zoom controls work on touch
-- [ ] Check category menu scrolling
-- [ ] Test minimap interactions
+- [ ] Check category menu wrapping and scrolling
 - [ ] Verify all text is readable
 - [ ] Check performance on slower devices
+- [ ] Test full-screen modals open/close correctly
+
+## Landscape Mode
+
+Special handling for landscape orientation on mobile devices:
+
+- Timeline: Full viewport height (`100vh`)
+- Events layer: Smaller top margin (70px), dynamic height with `bottom: 120px`
+- Timeline line: `calc(100vh - 90px)`
+- Year labels: `calc(100vh - 70px)`
+- Categories: Forced `top: 10px` positioning
+- Modal hero: Reduced to 100px for more content space
+- Modals remain full-screen
 
 ## Browser Support
 
@@ -139,8 +193,8 @@ We use a **desktop-first** approach with mobile overrides:
 ## Best Practices
 
 1. **Always test on real devices** - Emulators don't capture all touch behaviors
-2. **Use viewport units** - `vw`, `vh`, `vmin`, `vmax` for responsive sizing
-3. **Avoid fixed pixel values** - Use relative units (`rem`, `em`, `%`)
+2. **Use viewport units** - `vw`, `vh`, `calc()` for responsive sizing
+3. **Prefer CSS positioning on mobile** - Let media queries handle layout, clear JS inline styles
 4. **Test with slow connections** - Mobile users may have slower internet
 5. **Consider data usage** - Optimize images and assets for mobile
 
@@ -163,17 +217,42 @@ We use a **desktop-first** approach with mobile overrides:
 ```
 css/
 ├── main.css          # Imports all styles (including mobile.css)
-├── mobile.css        # Mobile-specific overrides
+├── mobile.css        # Mobile-specific overrides (394 lines)
 ├── base.css          # Base styles
-├── timeline.css      # Timeline styles (has some mobile queries)
-├── modal.css         # Modal styles (has some mobile queries)
+├── timeline.css      # Timeline styles
+├── modal.css         # Modal styles
 └── ...               # Other component styles
+
+js/
+├── timeline.js       # Contains mobile detection and CSS coordination logic
+└── ...               # Other JavaScript modules
 ```
+
+## Key CSS Sections in mobile.css
+
+| Section | Purpose |
+|---------|---------|
+| Base Mobile | Body padding reset |
+| Timeline | Full viewport height, touch scrolling |
+| Categories Menu | Compact buttons, flex-wrap, scrollable |
+| Bottom Bar | Vertical stack, hidden minimap |
+| Zoom Controls | 48px touch targets |
+| Events | Larger touch targets, hidden tooltips |
+| Timeline Line | Viewport-relative positioning |
+| Year Labels | Viewport-relative positioning |
+| Brand & Watermark | Repositioned for mobile |
+| Info Button | 40px touch target |
+| Modals | Full-screen layout |
+| Info Modal | Full-screen with vertical stacking |
+| Utility | Touch-friendly defaults |
+| Tablet | 768-1024px specific adjustments |
+| Landscape | Orientation-specific overrides |
 
 ## Maintenance
 
 When adding new components:
 1. Create desktop styles in appropriate component CSS file
 2. Add mobile overrides in `mobile.css`
-3. Test on mobile devices
-4. Update this guide if needed
+3. If component uses JS positioning, add mobile check to clear inline styles
+4. Test on mobile devices (portrait and landscape)
+5. Update this guide if needed
