@@ -230,10 +230,6 @@
     background-color: #f5f5f5;
 }
 
-/* Minimum width events: fixed right alignment with no margin */
-.event[data-min-width="true"] .event-title {
-
-}
 
 .event-title-text {
     flex: 0 1 auto;
