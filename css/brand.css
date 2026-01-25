@@ -1,0 +1,84 @@
+/* Brand Sticker */
+.brand-sticker {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%) translateZ(0);
+    width: 120px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 14px;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    will-change: transform;
+    z-index: 1200;
+    backdrop-filter: blur(3px);
+    backface-visibility: hidden;
+    transform-origin: center;
+}
+
+.brand-sticker img {
+    display: block;
+    width: 100%;
+    height: auto;
+    pointer-events: none;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    transform: translateZ(0);
+}
+
+.brand-sticker:hover {
+    /* Keep rotation subtle to avoid blur artifacts */
+    transform: translateX(-50%) translate3d(0, 2px, 0) scale(1.02) rotate(3deg);
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.22);
+}
+
+.brand-sticker:active {
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Watermark Logos */
+.watermark-logos {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+
+    pointer-events: none;
+    z-index: 1100;
+    backdrop-filter: blur(2px);
+}
+
+.watermark-logos img {
+    display: block;
+    height: 38px;
+    width: auto;
+    object-fit: contain;
+    filter: grayscale(100%);
+    opacity: 0.72;
+}
+
+@media (max-width: 768px) {
+    .brand-sticker {
+        width: 85px;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%) translateZ(0);
+        padding: 6px 10px;
+    }
+    .watermark-logos {
+        top: 10px;
+        left: 10px;
+        gap: 8px;
+        padding: 4px 8px;
+    }
+    .watermark-logos img {
+        height: 32px;
+    }
+}

@@ -715,7 +715,17 @@ function updateStickyEventTitles(animateAfterScroll = false, previousPositions =
 
         // Get event position and width from inline styles
         const eventLeft = parseFloat(eventDiv.style.left) || 0;
-        const eventWidth = parseFloat(eventDiv.style.width) || 0;
+        let eventWidth = parseFloat(eventDiv.style.width) || 0;
+        
+        // For min-width events, use the actual rendered width of the event-block (which has min-width: 30px in CSS)
+        // This ensures title aligns with the visual right edge, not the styled width which may be 0
+        if (isMinWidthEvent) {
+            const eventBlockEl = eventDiv.querySelector('.event-block');
+            if (eventBlockEl) {
+                eventWidth = eventBlockEl.offsetWidth;
+            }
+        }
+        
         const eventRight = eventLeft + eventWidth;
 
         // Measure title width (need to temporarily reset transform to get accurate measurement)

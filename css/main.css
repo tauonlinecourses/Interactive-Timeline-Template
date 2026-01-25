@@ -1,0 +1,12 @@
+/* Main CSS - Import all component styles in order */
+@import 'base.css';
+@import 'brand.css';
+@import 'info-button.css';
+@import 'controls.css';
+@import 'categories.css';
+@import 'timeline.css';
+@import 'events.css';
+@import 'years.css';
+@import 'utilities.css';
+@import 'modal.css';
+@import 'info-modal.css';

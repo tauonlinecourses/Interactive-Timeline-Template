@@ -1,0 +1,48 @@
+/* Info Button */
+.info-button {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #464646;
+    border: 2px solid #444444;
+    color: #ffffff;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 22px;
+    font-weight: 600;
+    font-style: italic;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1200;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.info-button:hover {
+    background: #5e5e5e;
+    border-color: #5e5e5e;
+    transform: scale(1.04);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+.info-button:active {
+    transform: scale(0.95);
+}
+
+.info-button span {
+    margin-top: -2px;
+}
+
+@media (max-width: 768px) {
+    .info-button {
+        top: 10px;
+        right: 10px;
+        width: 36px;
+        height: 36px;
+        font-size: 20px;
+    }
+}

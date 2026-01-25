@@ -1,0 +1,68 @@
+/* Categories Menu */
+.categories-menu {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 10px 20px;
+    background-color: transparent;
+    max-width: 90%;
+}
+
+/* Category Button - Parallelogram Shape */
+.category-btn {
+    position: relative;
+    width: 150px;
+    height: 33px;
+    background-color: #4a90e2;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000000;
+    font-weight: 600;
+    font-size: 16px;
+    text-align: center;
+    font-weight: 600;
+    padding: 0 5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    text-transform: capitalize;
+    /* Parallelogram shape - skew the button */
+    transform: skewX(-15deg);
+    overflow: visible;
+    font-family: 'Ezer Meoded Pashut Condensed', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Unskew the text inside the button */
+.category-btn span {
+    display: inline-block;
+    transform: skewX(15deg);
+}
+
+.category-btn:hover {
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    filter: brightness(1.05);
+}
+
+.category-btn:active {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Hidden state - make button semi-transparent */
+.category-btn.hidden {
+    opacity: 0.4;
+    filter: grayscale(50%);
+}
+
+.category-btn.hidden:hover {
+    opacity: 0.6;
+    filter: grayscale(30%);
+}

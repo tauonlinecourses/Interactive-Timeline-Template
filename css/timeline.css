@@ -1,0 +1,201 @@
+/* Timeline Container */
+.timeline-container {
+    position: relative;
+    width: 100%;
+    margin-top: 40px;
+    height: 850px;
+    cursor: default; /* Avoid showing drag cursor on the wrapper */
+}
+
+.timeline-bottom-bar {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: clamp(12px, 2vw, 24px);
+    width: 65vw;
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 1.5vw, 16px);
+    z-index: 1000;
+    padding: 6px 10px;
+    border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+    .timeline-bottom-bar {
+        width: calc(100% - 20px);
+        padding: 6px 10px;
+        gap: 10px;
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+/* Timeline Minimap */
+.timeline-minimap {
+    position: relative;
+    flex: 1;
+    height: 70px;
+    margin: 0;
+    background: rgba(255, 255, 255, 0.9);
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    border-radius: 0px;
+    
+}
+
+.timeline-minimap canvas {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: block;
+    z-index: 1;
+}
+
+.minimap-viewport {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    border: 2px solid #000000;
+    pointer-events: none;
+    transition: left 0.1s ease;
+    z-index: 2;
+}
+
+/* Dark overlay outside the viewport area */
+.minimap-viewport::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.25);
+    pointer-events: none;
+}
+
+.minimap-viewport.resizing {
+    transition: none;
+}
+
+.minimap-handle {
+    position: absolute;
+    top: 0;
+    width: 10px;
+    height: 100%;
+    cursor: ew-resize;
+    background: linear-gradient(180deg, rgba(60, 60, 60, 0.25), rgba(0, 0, 0, 0.37));
+    pointer-events: auto;
+    user-select: none;
+}
+
+.minimap-handle.left {
+    left: -6px;
+    border-right: 2px solid rgba(0, 0, 0, 0.35);
+}
+
+.minimap-handle.right {
+    right: -6px;
+    border-left: 2px solid rgba(0, 0, 0, 0.35);
+}
+
+.minimap-highlight {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: rgba(255, 255, 255, 0.55);
+    border: 2px solid #4a90e2;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+    border-radius: 4px;
+    display: none;
+    z-index: 2;
+}
+
+/* Timeline Scrollable Content */
+.timeline-scrollable {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+    cursor: grab;
+    /* Firefox scrollbar styling */
+    scrollbar-width: auto;
+}
+
+.timeline-scrollable.dragging {
+    cursor: grabbing;
+}
+
+/* Custom Scrollbar Styling for Timeline Scrollable (Webkit browsers) */
+.timeline-scrollable::-webkit-scrollbar {
+    height: 15px;
+}
+
+.timeline-scrollable::-webkit-scrollbar-track {
+    background: #e0e0e0;
+    border: 2px solid #d0d0d0;
+}
+
+.timeline-scrollable::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, #bbbbbb, #888888);
+    border-radius: 12px;
+    border: 3px solid #e0e0e0;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(180, 180, 180, 0.4);
+    min-width: 50px;
+}
+
+.timeline-scrollable::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(90deg, #888888, #666666);
+    box-shadow: 0 4px 12px rgba(140, 140, 140, 0.6);
+    border: 3px solid #d0d0d0;
+}
+
+.timeline-scrollable::-webkit-scrollbar-thumb:active {
+    background: linear-gradient(90deg, #666666, #444444);
+    box-shadow: 0 2px 6px rgba(120, 120, 120, 0.5);
+}
+
+/* Scrollbar Buttons (left/right arrows) */
+.timeline-scrollable::-webkit-scrollbar-button {
+    display: block;
+    width: 15px;
+    height: 15px;
+    background-color: #e0e0e0;
+    border: 1px solid #d0d0d0;
+
+}
+
+.timeline-scrollable::-webkit-scrollbar-button:hover {
+    background-color: #d0d0d0;
+}
+
+.timeline-scrollable::-webkit-scrollbar-button:active {
+    background-color: #c0c0c0;
+}
+
+/* Left arrow button */
+.timeline-scrollable::-webkit-scrollbar-button:horizontal:decrement {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 8 8'%3E%3Cpath fill='%23333' d='M3 2L1 4l2 2V2z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Right arrow button */
+.timeline-scrollable::-webkit-scrollbar-button:horizontal:increment {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 8 8'%3E%3Cpath fill='%23333' d='M5 2l2 2-2 2V2z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Temporarily hide the timeline scrollbar without removing existing styling */
+.timeline-scrollable {
+    scrollbar-width: none !important;
+}
+
+.timeline-scrollable::-webkit-scrollbar {
+    display: none !important;
+}
