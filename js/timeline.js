@@ -629,20 +629,37 @@ function renderEvents() {
     const timelineLine = scrollable.querySelector('.timeline-line');
     const timelineBottomBar = document.querySelector('.timeline-bottom-bar');
 
-    const baseTimelineLineTop = 780;
-    const baseReflectionLayerTop = 786;
-    const baseYearsLayerTop = 790;
+    // Check if we're on mobile - skip JS positioning and let CSS handle it
+    const isMobile = window.innerWidth < 768;
 
-    if (timelineLine) {
-        timelineLine.style.top = `${baseTimelineLineTop - pushUpOffset}px`;
-    }
+    if (!isMobile) {
+        // Desktop only: dynamically position timeline elements based on active layers
+        const baseTimelineLineTop = 780;
+        const baseReflectionLayerTop = 786;
+        const baseYearsLayerTop = 790;
 
-    if (reflectionLayer) {
-        reflectionLayer.style.top = `${baseReflectionLayerTop - pushUpOffset}px`;
-    }
+        if (timelineLine) {
+            timelineLine.style.top = `${baseTimelineLineTop - pushUpOffset}px`;
+        }
 
-    if (yearsLayer) {
-        yearsLayer.style.top = `${baseYearsLayerTop - pushUpOffset}px`;
+        if (reflectionLayer) {
+            reflectionLayer.style.top = `${baseReflectionLayerTop - pushUpOffset}px`;
+        }
+
+        if (yearsLayer) {
+            yearsLayer.style.top = `${baseYearsLayerTop - pushUpOffset}px`;
+        }
+    } else {
+        // Mobile: clear any inline styles so CSS media queries take effect
+        if (timelineLine) {
+            timelineLine.style.top = '';
+        }
+        if (reflectionLayer) {
+            reflectionLayer.style.top = '';
+        }
+        if (yearsLayer) {
+            yearsLayer.style.top = '';
+        }
     }
 
     if (timelineBottomBar) {

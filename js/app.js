@@ -42,6 +42,7 @@ function init() {
     setupTimelineDrag();
     setupStickyTitlesOnScroll();
     setupMinimapInteractions();
+    setupTouchZoom();
     loadInfo();
     loadEvents();
 }

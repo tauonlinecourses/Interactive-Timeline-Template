@@ -196,3 +196,118 @@ function setupWheelZoom() {
     zoomSurface.addEventListener('wheel', handleWheel, { passive: false });
 }
 
+// Enable two-finger pinch-to-zoom on touch devices (mobile/tablet).
+function setupTouchZoom() {
+    const scrollable = getTimelineScrollable();
+    if (!scrollable) return;
+
+    // Use the scrollable element as the touch surface for better mobile coverage
+    const zoomSurface = scrollable;
+
+    let initialPinchDistance = null;
+    let initialYearWidth = null;
+    let initialScrollLeft = null;
+    let pinchAnchorYear = null;
+    let pinchCenterX = null;
+    let touchFramePending = false;
+    let pendingZoomWidth = yearWidth;
+    let isPinching = false;
+
+    // Calculate distance between two touch points
+    const getTouchDistance = (touches) => {
+        const dx = touches[0].clientX - touches[1].clientX;
+        const dy = touches[0].clientY - touches[1].clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+    };
+
+    // Get the center point between two touches
+    const getTouchCenter = (touches) => {
+        return {
+            x: (touches[0].clientX + touches[1].clientX) / 2,
+            y: (touches[0].clientY + touches[1].clientY) / 2
+        };
+    };
+
+    const handleTouchStart = (event) => {
+        if (event.touches.length === 2) {
+            // Two fingers detected - start pinch gesture
+            isPinching = true;
+            initialPinchDistance = getTouchDistance(event.touches);
+            initialYearWidth = yearWidth;
+            initialScrollLeft = scrollable.scrollLeft;
+            pendingZoomWidth = yearWidth;
+
+            // Calculate anchor year at the center of the pinch
+            const center = getTouchCenter(event.touches);
+            pinchCenterX = center.x;
+            const rect = scrollable.getBoundingClientRect();
+            const offsetX = center.x - rect.left + scrollable.scrollLeft;
+            pinchAnchorYear = minYear + (offsetX / yearWidth);
+
+            // Prevent default to stop browser pinch-zoom
+            event.preventDefault();
+        }
+    };
+
+    const handleTouchMove = (event) => {
+        // Check if we should start pinching (second finger added during move)
+        if (!isPinching && event.touches.length === 2) {
+            isPinching = true;
+            initialPinchDistance = getTouchDistance(event.touches);
+            initialYearWidth = yearWidth;
+            initialScrollLeft = scrollable.scrollLeft;
+            pendingZoomWidth = yearWidth;
+
+            const center = getTouchCenter(event.touches);
+            pinchCenterX = center.x;
+            const rect = scrollable.getBoundingClientRect();
+            const offsetX = center.x - rect.left + scrollable.scrollLeft;
+            pinchAnchorYear = minYear + (offsetX / yearWidth);
+        }
+
+        if (!isPinching || event.touches.length !== 2) return;
+
+        // Prevent default browser behavior (page zoom, scroll)
+        event.preventDefault();
+
+        const currentDistance = getTouchDistance(event.touches);
+        const scale = currentDistance / initialPinchDistance;
+
+        // Calculate new zoom width based on scale
+        // Pinch out (spread fingers) = zoom in, pinch in = zoom out
+        const newZoomWidth = Math.min(
+            Math.max(initialYearWidth * scale, maxZoomOut),
+            maxZoomIn
+        );
+
+        pendingZoomWidth = newZoomWidth;
+
+        // Throttle updates via requestAnimationFrame
+        if (!touchFramePending) {
+            touchFramePending = true;
+            requestAnimationFrame(() => {
+                touchFramePending = false;
+                updateZoom(pendingZoomWidth, { anchor: { type: 'center', centerYear: pinchAnchorYear } });
+            });
+        }
+    };
+
+    const handleTouchEnd = (event) => {
+        if (event.touches.length < 2) {
+            // Pinch gesture ended
+            isPinching = false;
+            initialPinchDistance = null;
+            initialYearWidth = null;
+            initialScrollLeft = null;
+            pinchAnchorYear = null;
+            pinchCenterX = null;
+        }
+    };
+
+    // Add touch event listeners with passive: false to allow preventDefault
+    zoomSurface.addEventListener('touchstart', handleTouchStart, { passive: false });
+    zoomSurface.addEventListener('touchmove', handleTouchMove, { passive: false });
+    zoomSurface.addEventListener('touchend', handleTouchEnd, { passive: true });
+    zoomSurface.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+}
+

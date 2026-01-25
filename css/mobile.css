@@ -35,19 +35,20 @@
         transform: none;
         will-change: auto;
         margin-top: 70px;
+        /* Allow horizontal pan (single finger scroll) but let JS handle pinch-zoom */
+        touch-action: pan-x;
     }
     
     .events-layer {
-        top: 80px; /* Below categories menu */
-        bottom: 160px; /* Above timeline line area - events end higher */
-        height: auto; /* Let top/bottom define height */
+        top: 60px; /* Below categories menu */
+        height: calc(100vh - 60px - 150px); /* Viewport-relative: from 60px top to 150px from bottom (where timeline line is) */
     }
 }
 
 /* ==================== CATEGORIES MENU MOBILE ==================== */
 @media (max-width: 767px) {
     .categories-menu {
-        top: 30px; /* Position below header elements */
+        top: 10px; /* Position below header elements */
         padding: 4px 6px;
         gap: 4px;
         max-width: 100%;
@@ -150,7 +151,7 @@
 @media (max-width: 767px) {
     .timeline-line {
         position: absolute;
-        top: calc(100vh - 120px); /* Position closer to zoom buttons */
+        top: calc(100vh - 210px); /* Viewport-relative: 150px from bottom, matching events-layer bottom */
         left: 0;
         z-index: 100;
     }
@@ -164,7 +165,7 @@
 @media (max-width: 767px) {
     .years-layer {
         position: absolute;
-        top: calc(100vh - 95px); /* Position below timeline line, above zoom buttons */
+        top: calc(100vh - 200px); /* Position just below timeline line (line is at 150px from bottom + 6px height) */
         left: 0;
         z-index: 99;
     }
@@ -217,20 +218,32 @@
    but we'll add mobile-specific enhancements here */
 
 @media (max-width: 767px) {
+    /* Full screen modal on mobile */
+    .modal {
+        padding: 0;
+    }
+    
     .modal-content {
-        width: 95%;
-        max-width: none;
-        max-height: 95vh;
-        margin: 2.5vh auto;
-        border-radius: 12px;
+        width: 100%;
+        height:95%;
+        max-width: 100%;
+        max-height: 100%;
+        margin: 0;
+        border-radius: 0;
+        animation: none;
     }
     
     .modal-hero {
         height: 150px;
+        flex-shrink: 0;
     }
     
     .modal-inner {
         padding: 16px;
+        flex: 1;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
     }
     
     .modal-title {
@@ -239,40 +252,57 @@
     }
     
     .modal-nav-btn {
-        padding: 14px 20px;
-        font-size: 14px;
+        /* Fixed size - don't grow or shrink */
+        width: 110px;
+        height: 44px;
         min-width: 110px;
-        /* Better touch targets */
+        max-width: 110px;
         min-height: 44px;
+        max-height: 44px;
+        padding: 0 10px;
+        font-size: 14px;
+        box-sizing: border-box;
     }
     
     .modal-navigation {
         gap: 10px;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+        justify-content: center;
     }
     
     /* Stack modal body content vertically on mobile */
     .modal-body {
         flex-direction: column;
         gap: 16px;
+        flex: 1;
+        overflow-y: auto;
     }
     
     .modal-videos {
         width: 100%;
         position: static;
     }
+    
+    .modal-footer {
+        flex-shrink: 0;
+    }
 }
 
 /* ==================== INFO MODAL MOBILE ==================== */
 @media (max-width: 767px) {
     .info-modal-content {
-        width: 95%;
-        max-width: none;
-        max-height: 95vh;
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        margin: 0;
+        border-radius: 0;
     }
     
     .info-modal-body {
         flex-direction: column;
+        flex: 1;
+        overflow-y: auto;
     }
     
     .info-modal-video-section {
@@ -287,8 +317,8 @@
 
 /* ==================== UTILITY MOBILE STYLES ==================== */
 @media (max-width: 767px) {
-    /* Ensure touch-friendly spacing */
-    button, a {
+    /* Ensure touch-friendly spacing (exclude modal-nav-btn and modal-close-btn which have fixed sizes) */
+    button:not(.modal-nav-btn):not(.modal-close-btn), a {
         min-height: 44px; /* Apple's recommended minimum touch target */
     }
     
@@ -342,12 +372,22 @@
     }
     
     .categories-menu {
-        top: 30px;
+        top: 10px !important;
         padding: 4px 6px;
         max-width: 100%;
     }
     
+    /* Keep full screen modal in landscape too */
     .modal-content {
-        max-height: 90vh;
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        margin: 0;
+        border-radius: 0;
+    }
+    
+    .modal-hero {
+        height: 100px; /* Smaller hero in landscape for more content space */
     }
 }
