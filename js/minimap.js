@@ -49,7 +49,12 @@ function drawMinimap() {
         if (!isEventVisible(eventData)) return;
 
         const left = parseFloat(eventDiv.style.left) || 0;
-        const width = eventDiv.offsetWidth || eventDiv.getBoundingClientRect().width || 0;
+        const eventBlockEl = eventDiv.querySelector('.event-block');
+        // Use eventDiv width first, but fall back to event-block's width (which has min-width: 30px in CSS)
+        // This ensures narrow events at full zoom out are still drawn on the minimap
+        const eventDivWidth = eventDiv.offsetWidth || eventDiv.getBoundingClientRect().width || 0;
+        const blockWidth = eventBlockEl ? (eventBlockEl.offsetWidth || eventBlockEl.getBoundingClientRect().width) : 0;
+        const width = eventDivWidth || blockWidth;
         if (!width) return;
 
         const laneIndex = parseInt(eventDiv.getAttribute('data-lane-index'), 10) || 0;
@@ -441,7 +446,11 @@ function highlightMinimapEvent(eventDiv) {
     const laneHeight = containerHeight / laneCount;
 
     const left = parseFloat(eventDiv.style.left) || 0;
-    const width = eventDiv.offsetWidth || eventDiv.getBoundingClientRect().width || 0;
+    const eventBlockEl = eventDiv.querySelector('.event-block');
+    // Use eventDiv width first, but fall back to event-block's width (which has min-width: 30px in CSS)
+    const eventDivWidth = eventDiv.offsetWidth || eventDiv.getBoundingClientRect().width || 0;
+    const blockWidth = eventBlockEl ? (eventBlockEl.offsetWidth || eventBlockEl.getBoundingClientRect().width) : 0;
+    const width = eventDivWidth || blockWidth;
     const laneIndex = parseInt(eventDiv.getAttribute('data-lane-index'), 10) || 0;
 
     const highlightWidth = Math.max(width * scaleX, 1);
