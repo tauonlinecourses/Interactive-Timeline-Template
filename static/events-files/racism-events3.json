@@ -4,7 +4,7 @@
     "start_year": 1492,
     "end_year": 1551,
     "video_url": "",
-    "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Leif_Erikson_Discovers_America_Hans_Dahl.jpg/1200px-Leif_Erikson_Discovers_America_Hans_Dahl.jpg",
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Leif_Erikson_Discovers_America_Hans_Dahl.jpg/1200px-Leif_Erikson_Discovers_America_Hans_Dahl.jpg.                                    https://commons.wikimedia.org/w/index.php?title=Special:Search&search=Christopher+Columbus&ns0=1&ns6=1&ns12=1&ns14=1&ns100=1&ns106=1#/media/File:Portrait_of_a_Man,_Said_to_be_Christopher_Columbus.jpg",
     "links": [
       "https://www.britannica.com/biography/Christopher-Columbus",
       "https://www.britannica.com/biography/Bartolome-de-Las-Casas",
@@ -22,7 +22,7 @@
     "start_year": 1526,
     "end_year": 1808,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://commons.wikimedia.org/wiki/File:Barconegrero.jpg",
     "links": [],
     "descriptions": {
       "גזענות במדיניות": "מעצמות אירופה, ובראשן פורטוגל, ספרד, בריטניה וצרפת - הקימו מערכת סחר גלובלית שנשענה על חטיפת מיליוני אפריקאים והעברתם בכפייה כ\"סחורה\" לעולם החדש. העבדים הועסקו בכפייה במטעים, מכרות ובבתים. צורת עבדות זו הפכה ממעמד זמני למעמד גזעי תורשתי."
@@ -31,9 +31,9 @@
   {
     "title": "התרחבות הקולוניאליזם",
     "start_year": 1500,
-    "end_year": 1900,
+    "end_year": 1945,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://commons.wikimedia.org/wiki/File:World_1898_empires_colonies_territory.png",
     "links": [
       "https://www.britannica.com/topic/social-Darwinism",
       "https://www.britannica.com/topic/Western-colonialism",
@@ -49,7 +49,7 @@
     "start_year": 1603,
     "end_year": 1969,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://commons.wikimedia.org/wiki/File:Eta_or_Burakumin_by_Suzuki_Shin%27ichi_I,_1871.jpg",
     "links": [
       "https://www.youtube.com/watch?v=otScR1A3Xek",
       "https://www.britannica.com/topic/burakumin"
@@ -64,7 +64,7 @@
     "start_year": 1619,
     "end_year": 1865,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/File:Scourged_back_by_McPherson_%26_Oliver,_1863,_retouched.jpg",
     "links": [
       "https://www.britannica.com/topic/slavery-sociology",
       "https://www.britannica.com/topic/Fugitive-Slave-Acts",
@@ -83,7 +83,7 @@
     "start_year": 1770,
     "end_year": 1865,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://commons.wikimedia.org/wiki/File:Frederick_Douglass_(circa_1879).jpg",
     "links": [
       "https://www.britannica.com/biography/Olaudah-Equiano",
       "https://www.britannica.com/biography/Phillis-Wheatley",
@@ -99,7 +99,7 @@
     "start_year": 1800,
     "end_year": 1899,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/Caste_system_in_India#/media/File:Seventy-two_Specimens_of_Castes_in_India_(8).jpg",
     "links": [
       "https://www.britannica.com/place/India/Caste"
     ],
@@ -125,7 +125,7 @@
     "start_year": 1861,
     "end_year": 1865,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://commons.wikimedia.org/wiki/File:Abraham_Lincoln_head_on_shoulders_photo_portrait.jpg",
     "links": [
       "https://www.britannica.com/event/Emancipation-Proclamation"
     ],
@@ -139,7 +139,7 @@
     "start_year": 1865,
     "end_year": 1877,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/Reconstruction_era#/media/File:FreedmenVotingInNewOrleans1867.jpeg",
     "links": [
       "https://www.britannica.com/event/Reconstruction-United-States-history"
     ],
@@ -152,7 +152,7 @@
     "start_year": 1877,
     "end_year": 1877,
     "video_url": "https://www.youtube.com/watch?v=OMF3B7gE7mQ",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/Jim_Crow_laws#/media/File:JimCrowInDurhamNC.jpg",
     "links": [
       "https://www.britannica.com/event/Jim-Crow-law",
       "https://www.youtube.com/watch?v=T5FpKAxQNKU",
@@ -168,7 +168,7 @@
     "start_year": 1884,
     "end_year": 1885,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://commons.wikimedia.org/wiki/File:Kongokonferenz.jpg",
     "links": [
       "https://www.britannica.com/event/Berlin-West-Africa-Conference"
     ],
@@ -181,7 +181,7 @@
     "start_year": 1885,
     "end_year": 1908,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://commons.wikimedia.org/wiki/File:StoryoftheCongoFreeState_280.jpg",
     "links": [],
     "descriptions": {
       "גזענות במדיניות": "תחת שלטונו האישי של המלך לאופולד השני מבלגיה, הפכה מדינת קונגו החופשית לסמל של אכזריות וניצול קולוניאלי קיצוני, בעיקר סביב תעשיית הגומי. המשטר הפעיל מדיניות של עבודות כפייה בליווי אלימות קשה, עינויים וכריתת איברים - שהובילו לקריסה דמוגרפית עצומה ולמותם של כמחצית מהאוכלוסייה. זו יכולה לשמש כדוגמא לאכזריות ולמחיר האנושי של הקולוניאליזם המערבי.",
@@ -193,7 +193,7 @@
     "start_year": 1909,
     "end_year": 1909,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://commons.wikimedia.org/wiki/File:Formation_of_the_NAACP_1.jpg",
     "links": [
       "https://www.britannica.com/topic/National-Association-for-the-Advancement-of-Colored-People"
     ],
@@ -206,7 +206,7 @@
     "start_year": 1915,
     "end_year": 1915,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://commons.wikimedia.org/wiki/File:Birth-of-a-nation-klan-and-black-man.jpg",
     "links": [
       "https://www.britannica.com/topic/The-Birth-of-a-Nation"
     ],
@@ -219,7 +219,7 @@
     "start_year": 1915,
     "end_year": 1916,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://commons.wikimedia.org/wiki/File:Column_of_deportees_walking_through_Harput_vilayet_during_the_Armenian_genocide_(cropped).jpg",
     "links": [
       "https://www.britannica.com/event/Armenian-Genocide"
     ],
@@ -234,7 +234,7 @@
     "start_year": 1921,
     "end_year": 1921,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://commons.wikimedia.org/wiki/File:TulsaRaceRiot-1921.png",
     "links": [
       "https://www.britannica.com/event/Tulsa-race-massacre-of-1921"
     ],
@@ -261,7 +261,7 @@
     "start_year": 1935,
     "end_year": 1935,
     "video_url": "https://www.youtube.com/watch?v=K9n8XonHgZ0",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/Nuremberg_Laws#/media/File:Die_Katze_lasst_das_Mausen_nicht!.jpg",
     "links": [
       "https://www.youtube.com/watch?v=6W9jW2uBMAs",
       "https://www.britannica.com/place/Third-Reich"
@@ -276,7 +276,7 @@
     "start_year": 1936,
     "end_year": 1936,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/1936_Summer_Olympics#/media/File:Bundesarchiv_Bild_183-G00372,_Berlin,_XI._Olympiade,_Er%C3%B6ffnung.jpg",
     "links": [
       "https://www.haaretz.co.il/magazine/ayelet-shani/2025-08-06/ty-article-magazine/.highlight/00000198-7f80-d76c-addf-ffab66e10000"
     ],
@@ -291,7 +291,7 @@
     "start_year": 1933,
     "end_year": 1945,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/Pink_triangle#/media/File:Pink_triangle.svg",
     "links": [
       "https://www.britannica.com/place/Third-Reich"
     ],
@@ -304,7 +304,7 @@
     "start_year": 1938,
     "end_year": 1938,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/Kristallnacht#/media/File:Interior_view_of_the_destroyed_Fasanenstrasse_Synagogue,_Berlin.jpg",
     "links": [],
     "descriptions": {
       "גזענות במדיניות": "הרדיפה לפני פרוץ המלחמה הסלימה לאלימות ממוסדת מצד המדינה, במיוחד בליל הבדולח בנובמבר 1938, בו נשרפו בתי כנסת, נהרסו בתי עסק יהודיים, ויהודים רבים הוכו, נעצרו, ונושלו מרכושם."
@@ -315,7 +315,7 @@
     "start_year": 1941,
     "end_year": 1941,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/Wannsee_Conference#/media/File:Haus_der_Wannsee-Konferenz_02-2014.jpg",
     "links": [],
     "descriptions": {
       "גזענות במדיניות": "בועידת ואנזה בשנת 1941 הנאצים דנו ב״פתרון הסופי לשאלה היהודית״, והחלו תהליך של רצח עם שיטתי של יהדות אירופה. יהודים רוכזו בגטאות, נרצחו בירי המוני, והועברו למחנות ריכוז והשמדה, שם נרצחו או מתו מרעב ומחלות. בנוסף, המשטר רדף מיליוני בני אדם נוספים - ובהם צוענים, פולנים, שבויי מלחמה סובייטים, מתנגדים פוליטיים, הומוסקסואלים ובעלי מוגבלויות."
@@ -326,7 +326,7 @@
     "start_year": 1942,
     "end_year": 1946,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/Internment_of_Japanese_Americans#/media/File:Woodland,_California._Evacuees_of_Japanese_ancestry_are_boarding_a_special_train_for_Merced_Assembl_._._._-_NARA_-_537818_(cropped2).jpg",
     "links": [
       "https://www.britannica.com/event/Japanese-American-internment"
     ],
@@ -340,7 +340,7 @@
     "start_year": 1945,
     "end_year": 1945,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/Denazification#/media/File:Denazification-street.jpg",
     "links": [
       "https://www.britannica.com/event/Denazification"
     ],
@@ -353,7 +353,7 @@
     "start_year": 1893,
     "end_year": 1947,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/Mahatma_Gandhi#/media/File:Mahatma-Gandhi,_studio,_1931.jpg",
     "links": [
       "https://www.britannica.com/biography/Mahatma-Gandhi",
       "https://www.britannica.com/event/Salt-March"
@@ -368,7 +368,7 @@
     "start_year": 1927,
     "end_year": 1950,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/B._R._Ambedkar#/media/File:Dr._Bhimrao_Ambedkar.jpg",
     "links": [
       "https://www.britannica.com/biography/Bhimrao-Ramji-Ambedkar"
     ],
@@ -398,7 +398,7 @@
     "start_year": 1952,
     "end_year": 1961,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/Frantz_Fanon#/media/File:Photograph_of_Frantz_Fanon_from_Black_Skin_White_Masks_(1967)_dust_jacket.webp",
     "links": [
       "https://plato.stanford.edu/entries/fanon/",
       "https://ebooks-psik-io.eu1.proxy.openathens.net/book?book_id=7503"
@@ -412,7 +412,7 @@
     "start_year": 1948,
     "end_year": 1948,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/Apartheid#/media/File:Durban_Sign_1989_(3x4_cropped).jpg",
     "links": [
       "https://www.britannica.com/topic/apartheid",
       "https://www.britannica.com/biography/Nelson-Mandela"
@@ -426,7 +426,7 @@
     "start_year": 1952,
     "end_year": 1952,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/Apartheid#/media/File:Collectie_Fotocollectiie_Afdrukken_ANEFO_Rousel,_fotonummer_157-0188,_Bestanddeelnr_157-0188.jpg",
     "links": [
       "https://www.britannica.com/topic/apartheid",
       "https://www.britannica.com/biography/Nelson-Mandela"
@@ -440,7 +440,7 @@
     "start_year": 1960,
     "end_year": 1960,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/Sharpeville_massacre#/media/File:Sharpeville_Massacre_Graves,_Phelindaba_Cemetery,_Sharpeville,_Vereeniging,_South_Africa.jpg",
     "links": [
       "https://www.britannica.com/topic/apartheid",
       "https://www.britannica.com/biography/Nelson-Mandela"
@@ -454,7 +454,7 @@
     "start_year": 1954,
     "end_year": 1954,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/Brown_v._Board_of_Education#/media/File:Educational_separation_in_the_US_prior_to_Brown_Map.svg",
     "links": [
       "https://www.britannica.com/event/Brown-v-Board-of-Education-of-Topeka"
     ],
@@ -467,7 +467,7 @@
     "start_year": 1955,
     "end_year": 1955,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/Montgomery_bus_boycott#/media/File:Rosaparks_bus.jpg",
     "links": [],
     "descriptions": {
       "מאבק בגזענות": "בדצמבר 1955, בעקבות סירובה של רוזה פארקס לוותר על מושבה באוטובוס, החל חרם ממושך על מערך התחבורה הציבורית בעיר מונטגומרי. מאבק המוני זה, בהובלת מרטין לותר קינג הבן, נקט בטקטיקות של התנגדות לא-אלימה. המחאה הצליחה, ובנובמבר 1956 קבע בית המשפט העליון, בעקבות עתירה של ה-NAACP, כי יש לבטל את ההפרדה באוטובוסים. החרם הציב את קינג כדמות מרכזית בזירה הלאומית."
@@ -478,7 +478,7 @@
     "start_year": 1960,
     "end_year": 1960,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/Sit-in#/media/File:Benjamin_Cowins_during_a_sit-in_at_McCrory's_lunch_counter_in_Tallahassee.jpg",
     "links": [],
     "descriptions": {
       "מאבק בגזענות": "ב-1 בפברואר 1960, ארבעה סטודנטים שחורים החלו בגל חדש של מחאה כאשר ישבו בדלפק מזון מופרד (בדלפקי מזון היה אסור לשחורים לשבת בפנים) בגרינסבורו. בתוך זמן קצר, אלפי סטודנטים ברחבי הדרום הצטרפו לפעולות דומות."
@@ -489,7 +489,7 @@
     "start_year": 1963,
     "end_year": 1963,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/March_on_Washington#/media/File:Civil_rights_march_on_Washington,_D.C._from_Lincoln_(cropped).jpg",
     "links": [
       "https://www.youtube.com/watch?v=R_Zh0F2MiiE",
       "https://www.britannica.com/event/March-on-Washington"
@@ -503,7 +503,7 @@
     "start_year": 1964,
     "end_year": 1964,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/Civil_Rights_Act_of_1964#/media/File:Lyndon_Johnson_signing_Civil_Rights_Act,_July_2,_1964.jpg",
     "links": [],
     "descriptions": {
       "מאבק בגזענות": "בעקבות לחץ גובר מצד קינג והתנועה לזכויות האזרח, יזם הנשיא קנדי חקיקה שהובילה לחוק זכויות האזרח של 1964. חוק מקיף זה אסר אפליה על רקע גזע, צבע, דת, מין או מוצא לאומי במקומות ציבוריים, בתעסוקה ובתחומים נוספים. החוק העניק למדינה סמכות לאכוף את איסור האפליה במגוון תחומים."
@@ -527,7 +527,7 @@
     "start_year": 1976,
     "end_year": 1976,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://commons.wikimedia.org/wiki/File:Hector_Pieterson_Memorial.jpg",
     "links": [
       "https://www.britannica.com/topic/apartheid",
       "https://www.britannica.com/biography/Nelson-Mandela"
@@ -555,7 +555,7 @@
     "start_year": 1980,
     "end_year": 1994,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/Nelson_Mandela#/media/File:Nelson_Mandela_1994.jpg",
     "links": [
       "https://www.britannica.com/topic/apartheid",
       "https://www.britannica.com/biography/Nelson-Mandela"
@@ -569,7 +569,7 @@
     "start_year": 2001,
     "end_year": 2025,
     "video_url": "",
-    "image_url": "",
+    "image_url": "https://en.wikipedia.org/wiki/September_11_attacks#/media/File:WTC_smoking_on_9-11.jpeg/2",
     "links": [
       "https://www.britannica.com/topic/Islamophobia"
     ],
