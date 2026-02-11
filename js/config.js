@@ -99,7 +99,7 @@ if (timelineMinimap) {
     timelineMinimap.appendChild(minimapHighlight);
 }
 
-// Utility function to reverse mixed Hebrew-English titles
+// Utility function to fix bidirectional display of mixed Hebrew-English titles
 function reverseHebrewEnglishTitle(title) {
     // Check if title contains both Hebrew and Latin characters
     const hasHebrew = /[\u0590-\u05FF]/.test(title);
@@ -110,14 +110,12 @@ function reverseHebrewEnglishTitle(title) {
         return title;
     }
     
-    // Split by common separators (hyphen, dash, space-dash-space, etc.)
-    const parts = title.split(/(-|–|—|\s-\s|\s–\s|\s—\s)/);
+    // Use Unicode Left-to-Right Mark (LRM) to fix bidirectional text display
+    // Pattern matches Latin text (letters, numbers, spaces between words)
+    const LRM = '\u200e';
     
-    // Filter out empty strings and reverse the array
-    const nonEmptyParts = parts.filter(part => part.trim() !== '');
-    const reversed = nonEmptyParts.reverse();
-    
-    // Join with space if needed
-    return reversed.join(' ').trim();
+    // Wrap Latin/English segments with LRM marks to ensure correct display order
+    // This regex finds sequences of Latin characters, digits, and spaces
+    return title.replace(/([A-Za-z0-9]+(?:\s+[A-Za-z0-9]+)*)/g, `${LRM}$1${LRM}`);
 }
 
