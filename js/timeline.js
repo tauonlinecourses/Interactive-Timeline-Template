@@ -454,11 +454,12 @@ function renderEvents() {
         }
     });
 
-    // Post-process top layer events at full zoom out to space them from right to left
+    // Post-process top layer events to space them when they overlap.
+    // Events end up on the top layer when all other lanes are full, so they may
+    // overlap.  Spread them from right to left with a minimum pixel gap.
     const topLayerIndex = maxLayers - 1;
-    const isFullZoomOutForLanes = yearWidth <= 8;
     
-    if (isFullZoomOutForLanes && laneEventsByIndex[topLayerIndex] && laneEventsByIndex[topLayerIndex].length > 1) {
+    if (laneEventsByIndex[topLayerIndex] && laneEventsByIndex[topLayerIndex].length > 1) {
         // Use larger gap on mobile for better touch interaction
         const isMobileForTopLayer = window.innerWidth < 768;
         const topLayerMinGapPx = isMobileForTopLayer ? 75 : 50;

@@ -24,7 +24,7 @@ flowchart TD
     subgraph EntryPoint[Entry Point]
         App[app.js]
     end
-
+ 
     subgraph DataLayer[Data Layer]
         DataLoader[data-loader.js]
         JSON[(events JSON)]
