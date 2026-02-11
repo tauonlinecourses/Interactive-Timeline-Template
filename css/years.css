@@ -9,6 +9,28 @@
     z-index: 5;
 }
 
+/* Start and end caps for the main timeline line */
+.timeline-line::before,
+.timeline-line::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 26px;
+    background-color: #333;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.timeline-line::before {
+    left: 2px;
+    transform: translate(-50%, -50%); /* Center the cap on the very start */
+}
+
+.timeline-line::after {
+    right: 2px;
+    transform: translate(50%, -50%); /* Center the cap on the very end */
+}
+
 /* Reflection Layer - positioned just below the timeline line */
 .reflection-layer {
     position: absolute;
