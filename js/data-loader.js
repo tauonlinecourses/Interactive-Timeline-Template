@@ -120,6 +120,19 @@ async function loadEvents() {
             showEventModal(events[eventIndex], { skipHistoryUpdate: true });
         }
 
+        // Start preloading event images in the background
+        preloadEventImages(events, {
+            onProgress: (loaded, total) => {
+                // Optional: log progress for debugging
+                if (loaded % 5 === 0 || loaded === total) {
+                    console.log(`[Image Preloader] Progress: ${loaded}/${total}`);
+                }
+            },
+            onComplete: (status) => {
+                console.log(`[Image Preloader] Finished: ${status.loaded} images cached, ${status.failed} failed`);
+            }
+        });
+
         setTimeout(() => {
             isInitialRender = false;
         }, 100);
