@@ -4,7 +4,7 @@
 // Each key maps a URL ?t= value to its data files, page title, and theme class.
 const TIMELINES = {
     global: {
-        eventsFile: 'static/events-files/racism-events3.json',
+        eventsFile: 'static/events-files/global-events.json',
         infoFile: 'static/events-files/info.json',
         pageTitle: 'מהי גזענות | ציר זמן גלובלי',
         themeClass: null  // default theme, no extra class
