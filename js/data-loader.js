@@ -115,14 +115,17 @@ async function loadEvents() {
         maxYear = Math.max(...events.map(event => event.end_year));
 
         // Calculate the ideal zoom level so all events fill the viewport width
+        // and set it as the max zoom-out limit for this timeline
         const scrollable = getTimelineScrollable();
         if (scrollable) {
             const viewportWidth = scrollable.clientWidth;
             const yearRange = maxYear - minYear + 1;
             if (yearRange > 0 && viewportWidth > 0) {
                 const idealYearWidth = viewportWidth / yearRange;
-                // Clamp between the zoom limits
+                // Clamp between the absolute zoom limits
                 yearWidth = Math.min(Math.max(idealYearWidth, maxZoomOut), maxZoomIn);
+                // Set this as the max zoom-out so users can't zoom beyond the event range
+                maxZoomOut = yearWidth;
                 setZoomButtonStates();
             }
         }

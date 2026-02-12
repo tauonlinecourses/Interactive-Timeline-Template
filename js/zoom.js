@@ -1,7 +1,7 @@
 // Zoom controls for adjusting year width.
 
 const maxZoomIn = 200;
-const maxZoomOut = 3.57;
+let maxZoomOut = 3.57;
 
 // Preset zoom levels for discrete zoom steps
 const zoomLevels = [
@@ -115,13 +115,13 @@ function getNextZoomLevel(direction) {
         // If already at or past the last level, stay at max
         return maxZoomIn;
     } else {
-        // Find next lower zoom level (search from end)
+        // Find next lower zoom level (search from end), but never below maxZoomOut
         for (let i = zoomLevels.length - 1; i >= 0; i--) {
-            if (zoomLevels[i] < yearWidth) {
+            if (zoomLevels[i] < yearWidth && zoomLevels[i] >= maxZoomOut) {
                 return zoomLevels[i];
             }
         }
-        // If already at or past the first level, stay at min
+        // If no valid lower level found, stay at maxZoomOut
         return maxZoomOut;
     }
 }
