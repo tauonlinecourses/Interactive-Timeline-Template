@@ -1,12 +1,14 @@
 # Interactive Timeline
 
-An interactive horizontal timeline visualization tool for displaying historical events. Built with vanilla JavaScript, HTML, and CSS.
+An interactive horizontal timeline visualization tool for displaying historical events. Built with vanilla JavaScript, HTML, and CSS. Supports **multiple timeline variants** (e.g. Global, Israel) from a single codebase, switched via the `?t=` URL parameter.
 
 ## Quick Start
 
 1. Open a terminal in this directory
 2. Run: `python server.py`
-3. Open your browser and go to: `http://localhost:8888/index.html`
+3. Open your browser:
+   - **Global timeline** (default): `http://localhost:8888/index.html`
+   - **Israel timeline**: `http://localhost:8888/index.html?t=israel`
 
 ## Why a Server?
 
@@ -21,7 +23,7 @@ interactive-timeline/
 │
 ├── css/                    # Modular CSS stylesheets
 │   ├── main.css            # Main entry point - imports all component styles
-│   ├── base.css            # Base styles, fonts, and CSS variables
+│   ├── base.css            # Reset, fonts, category color CSS variables, theme overrides
 │   ├── brand.css           # Brand sticker and watermark logo styles
 │   ├── categories.css      # Category filter button styles
 │   ├── controls.css        # Zoom control button styles
@@ -30,38 +32,46 @@ interactive-timeline/
 │   ├── info-modal.css      # Info modal popup styles
 │   ├── modal.css           # Event detail modal styles
 │   ├── timeline.css        # Main timeline container and minimap styles
-│   ├── utilities.css       # Utility classes and helpers
-│   └── years.css           # Year label styles
+│   ├── utilities.css       # Loading/error states
+│   ├── years.css           # Year labels, timeline line, reflection
+│   └── mobile.css          # Mobile/tablet responsive overrides
 │
-├── js/                     # Modular JavaScript modules
-│   ├── app.js              # Entry point - initializes UI handlers and kicks off loading
-│   ├── config.js           # Configuration, state management, and DOM references
-│   ├── categories.js       # Category management, filtering, and color mapping
-│   ├── data-loader.js      # Fetches and parses event data from JSON
+├── js/                     # Modular JavaScript (global scope, no ES modules)
+│   ├── app.js              # Entry point - applies timeline config, initializes everything
+│   ├── config.js           # Configuration, multi-timeline routing, state, DOM references
+│   ├── categories.js       # Category extraction, color mapping, filtering, URL state
+│   ├── data-loader.js      # Fetches event/info JSON, processes and renders
+│   ├── image-preloader.js  # Preloads event images for smoother display
 │   ├── minimap.js          # Minimap rendering and drag/resize interactions
-│   ├── modal.js            # Event and info modal functionality
-│   ├── navigation.js       # URL handling, history, and error display
+│   ├── modal.js            # Info modal and event detail modal functionality
+│   ├── navigation.js       # URL handling, browser history, error display
 │   ├── timeline.js         # Core timeline rendering (events, lanes, year labels)
 │   ├── visual-effects.js   # Tooltips, reflections, and visual helpers
 │   └── zoom.js             # Zoom controls and wheel/pinch zoom handling
 │
 ├── static/                 # Static assets
 │   ├── events-files/       # JSON data files
-│   │   ├── racism-events3.json  # Main event data (active)
-│   │   ├── info.json            # Info modal content (Hebrew)
-│   │   └── ...                  # Backup/alternative event files
+│   │   ├── global-events.json  # Global timeline events
+│   │   ├── israel-events.json  # Israel timeline events
+│   │   ├── info.json           # Global info modal content (Hebrew)
+│   │   ├── israel-info.json    # Israel info modal content (Hebrew)
+│   │   └── backups/            # Backup event files
 │   ├── icons/              # SVG icons for UI controls
-│   │   ├── video-icon-*.svg     # Video indicator icons
-│   │   ├── *-arrow-icon-*.svg   # Navigation arrows
-│   │   └── *-zoom-icon-*.svg    # Zoom control icons
 │   └── images/             # Logo images and branding assets
 │
 ├── style.css               # Legacy stylesheet (deprecated - use css/main.css)
-├── features.txt            # Feature notes and planning
+├── AI_AGENT_GUIDE.md       # Detailed guide for AI agents working on this codebase
+├── MOBILE_GUIDE.md         # Mobile responsiveness documentation
 └── README.md               # This file
 ```
 
 ## Features
+
+### Multi-Timeline Support
+- **Multiple timeline variants** from a single codebase (e.g. Global, Israel)
+- **URL-based switching** via `?t=` parameter (e.g. `?t=israel`)
+- **Per-variant theming** with CSS custom property overrides for category colors
+- **Per-variant data files** for events and info modal content
 
 ### Timeline Visualization
 - **Horizontal scrollable timeline** with smooth drag-to-pan navigation
@@ -84,19 +94,33 @@ interactive-timeline/
 - **Keyboard support** (Escape to close)
 
 ### Category System
-- **Automatic category extraction** from event descriptions
-- **Color-coded categories** with configurable palette
+- **Automatic category extraction** from event description keys
+- **Color-coded categories** via CSS custom properties (`--category-N-color` in `base.css`)
 - **Filter buttons** to show/hide events by category
-- **URL state persistence** for category filters
+- **URL state persistence** for category filters (`?hide=cat1,cat2`)
 
 ### Tooltips
 - **Hover tooltips** with event preview (title, years, description excerpt)
 - **Smart positioning** adapts to event location and viewport
 - **Cursor-following mode** for wide events
 
+### Responsive Design
+- **Mobile optimized** with dedicated styles in `mobile.css`
+- **Breakpoints**: Mobile (`< 768px`), Tablet (`768px - 1024px`), Desktop (`> 1024px`)
+
+## URL Parameters
+
+| Parameter | Example | Description |
+|-----------|---------|-------------|
+| `t` | `?t=israel` | Timeline variant selector (defaults to `global` if missing) |
+| `hide` | `?hide=cat1,cat2` | Comma-separated list of hidden categories |
+| `event` | `?event=3` | Index of the currently open event modal |
+
+Parameters can be combined: `?t=israel&hide=Politics&event=2`
+
 ## Customizing Events
 
-Edit `static/events-files/racism-events3.json` (or create a new JSON file and update `data-loader.js`) to add or modify events.
+Event data lives in JSON files under `static/events-files/`. Each timeline variant points to its own data file, configured in the `TIMELINES` object in `js/config.js`.
 
 ### Event JSON Structure
 
@@ -122,32 +146,86 @@ Every entry in the events array follows this structure. Only `title`, `start_yea
 
 ### Field Reference
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| `title` | Yes | Event name displayed on timeline and in modal |
-| `start_year` | Yes | Starting year of the event |
-| `end_year` | Yes | Ending year (same as start_year for single-year events) |
-| `video_url` | No | YouTube URL - embedded in modal with video icon indicator |
-| `image_url` | No | Hero image URL for modal and tooltip backgrounds |
-| `links` | No | Array of URLs shown in expandable "Further Reading" section |
-| `descriptions` | No | Object with category names as keys and narrative text as values |
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `title` | string | Yes | Event name displayed on timeline and in modal |
+| `start_year` | number | Yes | Starting year of the event |
+| `end_year` | number | Yes | Ending year (same as start_year for single-year events) |
+| `video_url` | string | No | YouTube URL - embedded in modal with video icon indicator |
+| `image_url` | string | No | Hero image URL for modal and tooltip backgrounds |
+| `links` | string[] | No | Array of URLs shown in expandable "Further Reading" section |
+| `descriptions` | object | No | Object with category names as keys and narrative text as values |
 
 ### Categories
 
 Categories are automatically derived from the keys in each event's `descriptions` object. The timeline:
 - Extracts all unique categories from loaded events
-- Assigns colors from the palette defined in `config.js`
+- Assigns colors from the CSS custom properties defined in `css/base.css`
 - Creates filter buttons in the UI
 - Allows filtering events by clicking category buttons
 
 ## Configuration
 
-Key configuration values are in `js/config.js`:
+### Timeline Variants
+
+Timeline variants are defined in the `TIMELINES` object in `js/config.js`. Each entry specifies:
+
+| Property | Description |
+|----------|-------------|
+| `eventsFile` | Path to the events JSON file |
+| `infoFile` | Path to the info modal JSON file |
+| `pageTitle` | Value set as `document.title` |
+| `themeClass` | CSS class added to `<body>` (or `null` for default theme) |
+
+### Adding a New Timeline Variant
+
+1. Add an entry to the `TIMELINES` object in `js/config.js`
+2. Create the corresponding JSON data files in `static/events-files/`
+3. (Optional) Add a theme class in `css/base.css` to override `--category-N-color` variables
+4. Access via `index.html?t=<key>` where `<key>` matches your new `TIMELINES` key
+
+### Category Colors
+
+Category colors are defined as CSS custom properties in `css/base.css`:
+
+```css
+:root {
+    --category-1-color: #C36D53;
+    --category-2-color: #66B973;
+    /* ... up to --category-16-color */
+}
+
+.theme-israel {
+    --category-1-color: #2563EB;
+    --category-2-color: #DC2626;
+    /* ... overrides for Israel palette */
+}
+```
+
+At initialization, `readColorPaletteFromCSS()` in `config.js` reads these CSS variables into the JavaScript `colorPalette` array. Theme classes on `<body>` override the variables, so the JS code works identically for all variants.
+
+### Other Configuration
+
+Key values in `js/config.js`:
 
 - `yearWidth` - Default pixels per year (zoom level)
-- `colorPalette` - Array of hex colors for category assignment
-- `yearLabelIntervalLevels` - Zoom thresholds for year label density
 - `maxLayers` - Maximum event lanes (default: 8)
+- `maxZoomIn` / `maxZoomOut` - Zoom limits (1 to 200 px/year)
+- `yearLabelIntervalLevels` - Zoom thresholds for year label density
+
+### Info Modal Content
+
+Each timeline variant has its own info file (configured in `TIMELINES`):
+
+```json
+{
+  "Section Title": "Section content text",
+  "Another Section": "More content...",
+  "קישור לסרטון הסבר": "https://youtube.com/watch?v=..."
+}
+```
+
+The key `קישור לסרטון הסבר` (Hebrew for "link to explanation video") is special and embeds a YouTube video in the modal.
 
 ## Browser Support
 
@@ -157,21 +235,4 @@ Works in modern browsers (Chrome, Firefox, Safari, Edge). Requires JavaScript en
 
 No build process required. Edit files directly and refresh the browser. The Python server automatically serves updated files.
 
-### Changing the Data Source
-
-To use a different events file, edit `js/data-loader.js` line ~96:
-```javascript
-const response = await fetch('static/events-files/your-events.json');
-```
-
-### Customizing the Info Modal
-
-Edit `static/events-files/info.json` to change the info modal content. The structure is:
-```json
-{
-  "Section Title": "Section content text",
-  "Another Section": "More content...",
-  "קישור לסרטון הסבר": "https://youtube.com/watch?v=..." 
-}
-```
-The video link key (`קישור לסרטון הסבר`) is special - it embeds a YouTube video in the modal.
+All JavaScript modules share state through global variables (no ES modules). Script loading order in `index.html` matters -- `config.js` must load first, and `app.js` must load last.
