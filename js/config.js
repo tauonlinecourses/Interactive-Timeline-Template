@@ -1,5 +1,53 @@
 // Shared timeline configuration, state, and DOM references.
 
+// ── Multi-timeline support ──────────────────────────────────────────
+// Each key maps a URL ?t= value to its data files, page title, and theme class.
+const TIMELINES = {
+    global: {
+        eventsFile: 'static/events-files/racism-events3.json',
+        infoFile: 'static/events-files/info.json',
+        pageTitle: 'מהי גזענות | ציר זמן גלובלי',
+        themeClass: null  // default theme, no extra class
+    },
+    israel: {
+        eventsFile: 'static/events-files/israel-events.json',
+        infoFile: 'static/events-files/israel-info.json',
+        pageTitle: 'מהי גזענות | ציר זמן ישראלי',
+        themeClass: 'theme-israel'
+    }
+};
+
+/**
+ * Detects the active timeline from the ?t= URL parameter.
+ * Defaults to 'global' if the parameter is missing or unrecognized.
+ */
+function detectTimeline() {
+    const params = new URLSearchParams(window.location.search);
+    const key = (params.get('t') || '').toLowerCase();
+    return TIMELINES[key] || TIMELINES.global;
+}
+
+const activeTimeline = detectTimeline();
+
+/**
+ * Reads the category color palette from CSS custom properties.
+ * Must be called AFTER the theme class is applied to <body> so that
+ * theme-specific overrides are in effect.
+ */
+function readColorPaletteFromCSS() {
+    // Read from <body> so theme classes like `.theme-israel` that define
+    // CSS custom properties on the body element are taken into account.
+    // Fallback to documentElement for safety if body is not yet available.
+    const targetElement = document.body || document.documentElement;
+    const styles = getComputedStyle(targetElement);
+    const palette = [];
+    for (let i = 1; i <= 16; i++) {
+        const color = styles.getPropertyValue(`--category-${i}-color`).trim();
+        if (color) palette.push(color);
+    }
+    return palette.length > 0 ? palette : null; // null signals fallback
+}
+
 // Timeline Configuration
 let yearWidth = 3.57; // Default width per year in pixels (max zoom out)
 const minEventLabelWidth = 0; // Hide inline content on narrower blocks
@@ -16,8 +64,9 @@ let minYear = null;
 let maxYear = null;
 let events = [];
 
-// Color Palette - 10 colors for automatic category assignment
-const colorPalette = [
+// Color Palette - fallback colors for automatic category assignment.
+// At init, these are replaced by CSS custom properties (see readColorPaletteFromCSS).
+let colorPalette = [
     '#C36D53',
     '#66B973',
     '#E7B75C',

@@ -1,6 +1,17 @@
 // Entry point: wire up UI handlers and kick off data loading.
 
 function init() {
+    // ── Apply timeline-specific configuration ──
+    document.title = activeTimeline.pageTitle;
+    if (activeTimeline.themeClass) {
+        document.body.classList.add(activeTimeline.themeClass);
+    }
+    // Read the color palette from CSS variables (theme class must be applied first)
+    const cssPalette = readColorPaletteFromCSS();
+    if (cssPalette) {
+        colorPalette = cssPalette;
+    }
+
     zoomInBtn.addEventListener('click', zoomIn);
     zoomOutBtn.addEventListener('click', zoomOut);
     if (zoomMinBtn) zoomMinBtn.addEventListener('click', zoomToMin);

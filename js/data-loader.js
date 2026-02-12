@@ -5,7 +5,7 @@ let infoVideoId = null;
 
 async function loadInfo() {
     try {
-        const response = await fetch('static/events-files/info.json');
+        const response = await fetch(activeTimeline.infoFile);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -93,7 +93,7 @@ function updateInfoVideoDisplay() {
 
 async function loadEvents() {
     try {
-        const response = await fetch('static/events-files/racism-events3.json');
+        const response = await fetch(activeTimeline.eventsFile);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }

@@ -5,6 +5,49 @@
     box-sizing: border-box;
 }
 
+/* ── Category Color Palette (CSS Custom Properties) ────────────────
+   These variables are read by JavaScript (readColorPaletteFromCSS)
+   to build the runtime colorPalette array.  Theme classes override
+   them so a single JS code-path works for every timeline variant. */
+:root {
+    --category-1-color: #C36D53;
+    --category-2-color: #66B973;
+    --category-3-color: #E7B75C;
+    --category-4-color: #305C7A;
+    --category-5-color: #C6CB74;
+    --category-6-color: #5e72c7;
+    --category-7-color: #764ba2;
+    --category-8-color: #993b6f;
+    --category-9-color: #e74c3c;
+    --category-10-color: #f39c12;
+    --category-11-color: #2ecc71;
+    --category-12-color: #1abc9c;
+    --category-13-color: #3498db;
+    --category-14-color: #9b59b6;
+    --category-15-color: #e67e22;
+    --category-16-color: #AE563C;
+}
+
+/* Israel theme – overrides category colors */
+.theme-israel {
+    --category-1-color: #D39C67;
+    --category-2-color: #67D3C3;
+    --category-3-color: #67A7D3;
+    --category-4-color: #10B981;
+    --category-5-color: #8B5CF6;
+    --category-6-color: #0891B2;
+    --category-7-color: #DB2777;
+    --category-8-color: #D39C67;
+    --category-9-color: #059669;
+    --category-10-color: #7C3AED;
+    --category-11-color: #E11D48;
+    --category-12-color: #0D9488;
+    --category-13-color: #2563EB;
+    --category-14-color: #9333EA;
+    --category-15-color: #EA580C;
+    --category-16-color: #4F46E5;
+}
+
 /* Custom Hebrew Font */
 @font-face {
     font-family: 'Ezer Meoded Pashut Condensed';
