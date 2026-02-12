@@ -111,6 +111,58 @@ function isYouTubeLink(url) {
     return url && (url.includes('youtube.com') || url.includes('youtu.be'));
 }
 
+// Convert URLs/emails inside a text string into clickable links within a container element
+function linkifyText(container, text) {
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (!text || typeof text !== 'string') {
+        container.textContent = text || '';
+        return;
+    }
+
+    // Match only URLs starting with http(s) or www. (no generic "@" email patterns etc.)
+    const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/g;
+
+    let lastIndex = 0;
+    let match;
+
+    while ((match = urlRegex.exec(text)) !== null) {
+        const matchText = match[0];
+
+        // Add text before the match
+        if (match.index > lastIndex) {
+            container.appendChild(
+                document.createTextNode(text.slice(lastIndex, match.index))
+            );
+        }
+
+        // Create link for the match
+        const link = document.createElement('a');
+        let href = matchText;
+
+        // Add protocol for www. links that don't have one
+        if (!matchText.startsWith('http')) {
+            href = `https://${matchText}`;
+        }
+
+        link.href = href;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.textContent = matchText;
+
+        container.appendChild(link);
+        lastIndex = urlRegex.lastIndex;
+    }
+
+    // Remaining text after last match
+    if (lastIndex < text.length) {
+        container.appendChild(
+            document.createTextNode(text.slice(lastIndex))
+        );
+    }
+}
+
 function updateEventURL(eventIndex, options = {}) {
     const { replace = false } = options;
     const urlParams = new URLSearchParams(window.location.search);
@@ -248,7 +300,8 @@ function showEventModal(event, options = {}) {
 
             const descriptionText = document.createElement('div');
             descriptionText.className = 'modal-description-text';
-            descriptionText.textContent = description;
+            // Make only URLs/emails inside the description clickable, not the whole text
+            linkifyText(descriptionText, description);
 
             descriptionItem.appendChild(categoryName);
             descriptionItem.appendChild(descriptionText);
@@ -263,13 +316,27 @@ function showEventModal(event, options = {}) {
     const allLinks = event.links || [];
     if (allLinks.length > 0) {
         allLinks.forEach((link, index) => {
-            const linkElement = document.createElement('a');
-            linkElement.className = 'modal-link';
-            linkElement.href = link;
-            linkElement.target = '_blank';
-            linkElement.rel = 'noopener noreferrer';
-            linkElement.textContent = link;
-            modalLinks.appendChild(linkElement);
+            const value = (link || '').toString().trim();
+            if (!value) return;
+
+            // If the string looks like a real URL, render it as a clickable link.
+            const isUrl = /^(https?:\/\/|www\.)/i.test(value);
+
+            if (isUrl) {
+                const linkElement = document.createElement('a');
+                linkElement.className = 'modal-link';
+                linkElement.href = value.startsWith('http') ? value : `https://${value}`;
+                linkElement.target = '_blank';
+                linkElement.rel = 'noopener noreferrer';
+                linkElement.textContent = value;
+                modalLinks.appendChild(linkElement);
+            } else {
+                // Otherwise, render as plain reference text (not clickable)
+                const textElement = document.createElement('div');
+                textElement.className = 'modal-link-text';
+                textElement.textContent = value;
+                modalLinks.appendChild(textElement);
+            }
         });
         modalLinksSection.style.display = 'flex';
         modalFooter.classList.remove('no-links');
