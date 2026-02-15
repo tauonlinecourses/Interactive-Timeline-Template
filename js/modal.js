@@ -2,6 +2,9 @@
 
 let currentEventIndex = -1;
 
+// Hero image scroll position (percent). Used for mouse-wheel panning when image is cover/cropped.
+let heroScrollPosition = { x: 50, y: 50 };
+
 // ==================== INFO MODAL FUNCTIONS ====================
 
 function showInfoModal() {
@@ -189,6 +192,14 @@ function showEventModal(event, options = {}) {
     const modal = document.getElementById('eventModal');
     const modalContent = modal.querySelector('.modal-content');
     const modalHero = document.getElementById('modalHero');
+    const modalHeroExpandBtn = document.getElementById('modalHeroExpandBtn');
+
+    // Reset expanded state when opening a new event
+    modalContent.classList.remove('hero-expanded');
+    clearExpandedHeroDimensions(modalContent);
+    if (typeof updateModalHeroExpandButtonIcon === 'function') {
+        updateModalHeroExpandButtonIcon(modalContent);
+    }
     const modalTitle = document.getElementById('modalTitle');
     const modalVideoIcon = document.getElementById('modalVideoIcon-black');
     const modalCategories = document.getElementById('modalCategories');
@@ -211,8 +222,11 @@ function showEventModal(event, options = {}) {
     if (event.image_url && event.image_url.trim() !== '') {
         modalHero.style.backgroundImage = `url('${event.image_url}')`;
         modalHero.style.backgroundSize = 'cover';
-        modalHero.style.backgroundPosition = 'center';
+        heroScrollPosition = { x: 50, y: 50 };
+        modalHero.style.backgroundPosition = '50% 50%';
+        if (modalHeroExpandBtn) modalHeroExpandBtn.style.display = 'flex';
     } else {
+        if (modalHeroExpandBtn) modalHeroExpandBtn.style.display = 'none';
         // Create a gradient from category colors
         const categoryList = [];
         if (Array.isArray(event.categories)) {
@@ -385,8 +399,13 @@ function showNextEvent() {
 function closeEventModal(arg = false) {
     const skipHistoryUpdate = typeof arg === 'boolean' ? arg : false;
     const modal = document.getElementById('eventModal');
+    const modalContent = modal ? modal.querySelector('.modal-content') : null;
     const modalVideos = document.getElementById('modalVideos');
 
+    if (modalContent) {
+        modalContent.classList.remove('hero-expanded');
+        clearExpandedHeroDimensions(modalContent);
+    }
     clearModalVideos(modalVideos);
 
     modal.classList.remove('active');
@@ -436,6 +455,148 @@ function initModalLinksToggle() {
     });
 }
 
-// Initialize modal links toggle when DOM is ready
-document.addEventListener('DOMContentLoaded', initModalLinksToggle);
+// Icon paths for expand/collapse hero image button
+const HERO_EXPAND_ICON = 'static/icons/rectangle-expand-vertical-svgrepo-com.svg';
+const HERO_MINIMIZE_ICON = 'static/icons/arrow-minimize-vertical-svgrepo-com.svg';
+
+function updateModalHeroExpandButtonIcon(modalContent) {
+    const expandBtn = document.getElementById('modalHeroExpandBtn');
+    if (!expandBtn || !modalContent) return;
+    const img = expandBtn.querySelector('img');
+    const isExpanded = modalContent.classList.contains('hero-expanded');
+    if (img) {
+        img.src = isExpanded ? HERO_MINIMIZE_ICON : HERO_EXPAND_ICON;
+    }
+    expandBtn.setAttribute('aria-label', isExpanded ? 'Minimize image' : 'Expand image');
+    expandBtn.setAttribute('title', isExpanded ? 'Minimize image' : 'Expand image');
+}
+
+// Compute modal content dimensions so the image fits within viewport at its aspect ratio
+function getExpandedImageDimensions(naturalWidth, naturalHeight) {
+    const maxW = 0.9 * window.innerWidth;
+    const maxH = 0.9 * window.innerHeight;
+    if (naturalWidth <= 0 || naturalHeight <= 0) return { width: maxW, height: maxH };
+    const scale = Math.min(maxW / naturalWidth, maxH / naturalHeight);
+    return {
+        width: Math.round(naturalWidth * scale),
+        height: Math.round(naturalHeight * scale)
+    };
+}
+
+function clearExpandedHeroDimensions(modalContent) {
+    if (!modalContent) return;
+    modalContent.style.width = '';
+    modalContent.style.height = '';
+}
+
+// Expand/collapse hero image in event modal; size modal to each image when expanded
+function initModalHeroExpand() {
+    const expandBtn = document.getElementById('modalHeroExpandBtn');
+    const modal = document.getElementById('eventModal');
+    const modalContent = modal ? modal.querySelector('.modal-content') : null;
+
+    if (!expandBtn || !modalContent) return;
+
+    expandBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isExpanding = !modalContent.classList.contains('hero-expanded');
+
+        if (isExpanding) {
+            const event = Number.isInteger(currentEventIndex) && currentEventIndex >= 0 && events[currentEventIndex]
+                ? events[currentEventIndex]
+                : null;
+            const imageUrl = event && event.image_url && event.image_url.trim() ? event.image_url.trim() : null;
+
+            if (imageUrl) {
+                const img = new Image();
+                img.onload = () => {
+                    const { width, height } = getExpandedImageDimensions(img.naturalWidth, img.naturalHeight);
+                    modalContent.classList.add('hero-expanded');
+                    updateModalHeroExpandButtonIcon(modalContent);
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            modalContent.style.width = width + 'px';
+                            modalContent.style.height = height + 'px';
+                        });
+                    });
+                };
+                img.onerror = () => {
+                    modalContent.classList.add('hero-expanded');
+                    updateModalHeroExpandButtonIcon(modalContent);
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            modalContent.style.width = '90vw';
+                            modalContent.style.height = '90vh';
+                        });
+                    });
+                };
+                img.src = imageUrl;
+            } else {
+                modalContent.classList.add('hero-expanded');
+                updateModalHeroExpandButtonIcon(modalContent);
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        modalContent.style.width = '90vw';
+                        modalContent.style.height = '90vh';
+                    });
+                });
+            }
+        } else {
+            const modalHero = document.getElementById('modalHero');
+            if (modalHero) {
+                modalHero.classList.add('hero-collapsing');
+                const collapseDuration = 250;
+                setTimeout(() => {
+                    modalHero.classList.remove('hero-collapsing');
+                    modalContent.classList.remove('hero-expanded');
+                    clearExpandedHeroDimensions(modalContent);
+                    updateModalHeroExpandButtonIcon(modalContent);
+                }, collapseDuration);
+            } else {
+                modalContent.classList.remove('hero-expanded');
+                clearExpandedHeroDimensions(modalContent);
+                updateModalHeroExpandButtonIcon(modalContent);
+            }
+        }
+    });
+}
+
+// Mouse wheel scroll/pan on modal hero image (when image is cropped with cover)
+function initModalHeroWheelScroll() {
+    const modalHero = document.getElementById('modalHero');
+    const modal = document.getElementById('eventModal');
+    const modalContent = modal ? modal.querySelector('.modal-content') : null;
+
+    if (!modalHero || !modalContent) return;
+
+    const WHEEL_STEP = 0.25;
+    const MIN = 0;
+    const MAX = 100;
+
+    modalHero.addEventListener('wheel', (e) => {
+        if (!modal.classList.contains('active')) return;
+        if (modalContent.classList.contains('hero-expanded')) return;
+
+        const bgImage = modalHero.style.backgroundImage || '';
+        const hasImage = bgImage.startsWith('url(') && !bgImage.includes('gradient');
+        if (!hasImage) return;
+
+        e.preventDefault();
+
+        if (e.shiftKey) {
+            heroScrollPosition.x = Math.min(MAX, Math.max(MIN, heroScrollPosition.x + e.deltaY * WHEEL_STEP));
+        } else {
+            heroScrollPosition.y = Math.min(MAX, Math.max(MIN, heroScrollPosition.y + e.deltaY * WHEEL_STEP));
+        }
+
+        modalHero.style.backgroundPosition = `${heroScrollPosition.x}% ${heroScrollPosition.y}%`;
+    }, { passive: false });
+}
+
+// Initialize modal links toggle, hero expand, and hero wheel scroll when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    initModalLinksToggle();
+    initModalHeroExpand();
+    initModalHeroWheelScroll();
+});
 
