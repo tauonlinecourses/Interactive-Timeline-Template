@@ -606,11 +606,13 @@ function renderEvents() {
         }
     });
 
-    // Calculate push-up offset based on used lanes vs a baseline
+    // Calculate push-up offset; use initial value from first render so timeline position stays fixed when filtering
     const baselineLayers = 9;
     const unusedLayers = Math.max(0, baselineLayers - activeLayersCount);
     const maxPushUpOffset = 160;
-    const pushUpOffset = Math.min(unusedLayers * layerSpacing, maxPushUpOffset);
+    const calculatedPushUp = Math.min(unusedLayers * layerSpacing, maxPushUpOffset);
+    if (fixedPushUpOffset === null) fixedPushUpOffset = calculatedPushUp;
+    const pushUpOffset = fixedPushUpOffset;
 
     const allEventElements = eventsLayer.querySelectorAll('.event:not(.fade-out)');
     allEventElements.forEach(eventDiv => {

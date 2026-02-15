@@ -42,61 +42,63 @@
     gap: 40px;
 }
 
-/* Video Section - Left Column */
+/* PDF link + image Section - Left Column */
 .info-modal-video-section {
     flex: 0 0 45%;
     display: flex;
     flex-direction: column;
 }
 
-.info-modal-video-placeholder {
+.info-modal-pdf-link {
+    display: block;
+    position: relative;
     width: 100%;
-    aspect-ratio: 16 / 9;
-    background: #9ca3af;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+    overflow: hidden;
+    border-radius: 4px;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-.info-modal-video-placeholder:hover {
-    background: #7c8390;
+.info-modal-pdf-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    vertical-align: middle;
+    transition: transform 0.2s ease;
 }
 
-.info-play-button {
-    width: 80px;
-    height: 80px;
-    background: rgba(255, 255, 255, 0.95);
+.info-modal-pdf-link:hover .info-modal-pdf-image {
+    transform: scale(1.03);
+}
+
+.info-modal-pdf-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 64px;
+    height: 64px;
+    background: #FFC85E;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    pointer-events: none;
 }
 
-.info-modal-video-placeholder:hover .info-play-button {
-    transform: scale(1.08);
+.info-modal-pdf-link:hover .info-modal-pdf-icon {
+    transform: translate(-50%, -50%) scale(1.08);
     box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
 }
 
-.info-play-button svg {
-    width: 36px;
-    height: 36px;
+.info-modal-pdf-icon svg {
+    width: 32px;
+    height: 32px;
     color: #1a1a1a;
-    margin-left: -4px;
-}
-
-.info-modal-video {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-}
-
-.info-modal-video iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
 }
 
 /* Content Sections - Right Column */
@@ -165,14 +167,14 @@
         margin-bottom: 20px;
     }
     
-    .info-play-button {
-        width: 60px;
-        height: 60px;
+    .info-modal-pdf-icon {
+        width: 52px;
+        height: 52px;
     }
     
-    .info-play-button svg {
-        width: 28px;
-        height: 28px;
+    .info-modal-pdf-icon svg {
+        width: 26px;
+        height: 26px;
     }
     
     .info-section-title {

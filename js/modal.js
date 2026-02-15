@@ -13,9 +13,6 @@ function showInfoModal() {
     // Ensure content is populated (in case it wasn't loaded yet)
     if (typeof populateInfoModal === 'function') {
         populateInfoModal();
-    } else if (typeof updateInfoVideoDisplay === 'function') {
-        // If populateInfoModal already ran, just update video display
-        updateInfoVideoDisplay();
     }
     
     modal.classList.add('active');
@@ -24,45 +21,14 @@ function showInfoModal() {
 
 function closeInfoModal() {
     const modal = document.getElementById('infoModal');
-    const videoIframe = document.getElementById('infoVideoIframe');
-    
-    // Stop video if playing
-    if (videoIframe) {
-        try {
-            videoIframe.contentWindow?.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
-        } catch (e) { /* no-op */ }
-        videoIframe.src = '';
-    }
-    
-    // Reset video display state (will be set correctly when modal opens again)
-    if (typeof updateInfoVideoDisplay === 'function') {
-        updateInfoVideoDisplay();
-    }
-    
     modal.classList.remove('active');
     document.body.style.overflow = '';
-}
-
-function playInfoVideo() {
-    const videoPlaceholder = document.getElementById('infoVideoPlaceholder');
-    const videoContainer = document.getElementById('infoModalVideo');
-    const videoIframe = document.getElementById('infoVideoIframe');
-    
-    // Get video ID from global variable set by data-loader.js
-    const videoId = window.infoVideoId || (typeof infoVideoId !== 'undefined' ? infoVideoId : null);
-    
-    if (videoId && videoIframe) {
-        videoIframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&rel=0&autoplay=1`;
-        if (videoPlaceholder) videoPlaceholder.style.display = 'none';
-        if (videoContainer) videoContainer.style.display = 'block';
-    }
 }
 
 function initInfoModal() {
     const infoBtn = document.getElementById('infoBtn');
     const infoModalCloseBtn = document.getElementById('infoModalCloseBtn');
     const infoModal = document.getElementById('infoModal');
-    const videoPlaceholder = document.getElementById('infoVideoPlaceholder');
     
     if (infoBtn) {
         infoBtn.addEventListener('click', showInfoModal);
@@ -78,10 +44,6 @@ function initInfoModal() {
                 closeInfoModal();
             }
         });
-    }
-    
-    if (videoPlaceholder) {
-        videoPlaceholder.addEventListener('click', playInfoVideo);
     }
     
     // Close on Escape key

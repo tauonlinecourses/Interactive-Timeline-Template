@@ -106,6 +106,9 @@ let isZooming = false;
 // Track the number of layers that contain events
 let activeLayersCount = 0;
 
+// Fixed push-up offset: set on first timeline render (all events), then reused so timeline doesn't move when filtering
+let fixedPushUpOffset = null;
+
 // Timeline drag state
 let timelineDragging = false;
 let timelineDragStartX = 0;
