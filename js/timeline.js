@@ -606,6 +606,47 @@ function renderEvents() {
         }
     });
 
+    // Title truncation: limit title width so it does not overlap the previous event in the same lane
+    // (Uses final positions including top-layer repositioning; .event-title-text uses CSS ellipsis)
+    const titlePaddingLeft = 15; // Match .event-title padding-left in events.css
+    const titleSafetyBuffer = 10; // Minimum gap before previous event
+    const defaultTitleMaxWidth = 500; // Match .event-title max-width in events.css
+    visibleEventMap.forEach((event, eventIndex) => {
+        const eventDiv = eventDivMap.get(eventIndex);
+        if (!eventDiv) return;
+        if (eventDiv.getAttribute('data-title-hidden') === 'true') return;
+
+        const laneIndex = parseInt(eventDiv.getAttribute('data-lane-index'), 10);
+        const eventLeftPx = parseFloat(eventDiv.style.left) || 0;
+
+        let previousEventRightPx = 0;
+        if (!isNaN(laneIndex) && laneEventsByIndex[laneIndex]) {
+            laneEventsByIndex[laneIndex].forEach(otherEventIndex => {
+                if (otherEventIndex === eventIndex) return;
+                const otherEvent = visibleEventMap.get(otherEventIndex);
+                const otherEventDiv = eventDivMap.get(otherEventIndex);
+                if (!otherEvent || !otherEventDiv) return;
+                if (otherEvent.end_year >= event.start_year) return;
+                const otherLeftPx = parseFloat(otherEventDiv.style.left) || 0;
+                const otherWidthPx = parseFloat(otherEventDiv.style.width) || 0;
+                const otherRightPx = otherLeftPx + otherWidthPx;
+                previousEventRightPx = Math.max(previousEventRightPx, otherRightPx);
+            });
+        }
+
+        const titleEl = eventDiv.querySelector('.event-title');
+        const titleTextEl = eventDiv.querySelector('.event-title-text');
+        if (titleEl && titleTextEl) {
+            const eventWidthPx = parseFloat(eventDiv.style.width) || 0;
+            const availableWidth = (eventLeftPx + eventWidthPx) - previousEventRightPx - titlePaddingLeft - titleSafetyBuffer;
+            if (previousEventRightPx > 0 && availableWidth < defaultTitleMaxWidth) {
+                titleTextEl.style.maxWidth = `${Math.max(0, Math.floor(availableWidth))}px`;
+            } else {
+                titleTextEl.style.maxWidth = '';
+            }
+        }
+    });
+
     // Calculate push-up offset; use initial value from first render so timeline position stays fixed when filtering
     const baselineLayers = 9;
     const unusedLayers = Math.max(0, baselineLayers - activeLayersCount);
