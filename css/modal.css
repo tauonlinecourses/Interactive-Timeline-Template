@@ -117,7 +117,7 @@
     width: 44px;
     height: 44px;
     padding: 0;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.40);
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -129,7 +129,7 @@
 }
 
 .modal-hero-expand-btn:hover {
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0.7);
     transform: translate(-50%, -50%) scale(1.08);
 }
 
@@ -148,6 +148,10 @@
 .modal-content.hero-expanded {
     max-width: 90vw;
     max-height: 90vh;
+}
+
+.modal-content.hero-expanded .modal-close-btn {
+    display: none !important;
 }
 
 .modal-content.hero-expanded .modal-hero {
@@ -201,7 +205,7 @@
 }
 
 .modal-content.hero-expanded .modal-hero-expand-btn {
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.6);
 }
 
 /* Modal Inner Content */

@@ -517,6 +517,7 @@ The key `קישור לסרטון הסבר` (Hebrew for "link to explanation vide
 1. **Layout**: `css/modal.css`
 2. **Content**: `showEventModal()` in `js/modal.js`
 3. **Navigation**: `showPreviousEvent()`, `showNextEvent()` in `js/modal.js`
+4. **Hero image expansion**: When `.hero-expanded` is applied to `.modal-content`, the hero image covers the modal and the close button inside the hero is hidden; users close the modal via background click or keyboard (Escape).
 
 ### Adding Category Colors
 
