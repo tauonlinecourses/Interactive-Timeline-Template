@@ -127,6 +127,7 @@ Each `TIMELINES` entry contains:
 | `infoFile` | Path to the info modal JSON file |
 | `pageTitle` | Value set as `document.title` |
 | `themeClass` | CSS class added to `<body>` (or `null` for default) |
+| `titleImage` | Optional object `{ src, alt }` used to render the per-timeline title image next to the info button and as the header image inside the info modal |
 
 **Key Constants**:
 ```javascript
@@ -372,7 +373,7 @@ All URL-manipulation functions (`updateURL`, `updateEventURL`) preserve the `?t=
 | `categories.css` | Category filter buttons |
 | `controls.css` | Zoom control buttons |
 | `events.css` | Event blocks and tooltips |
-| `info-button.css` | Info button (top right) |
+| `info-button.css` | Info button and per-timeline title image (top right) |
 | `info-modal.css` | Info/about modal |
 | `modal.css` | Event detail modal |
 | `timeline.css` | Timeline container, minimap, scrollbar |
@@ -471,7 +472,7 @@ Each timeline variant has its own info file (configured via `TIMELINES[key].info
   "קישור לסרטון הסבר": "https://youtube.com/watch?v=..."
 }
 ```
-The key `קישור לסרטון הסבר` (Hebrew for "link to explanation video") triggers video embedding.
+The key `קישור לסרטון הסבר` (Hebrew for "link to explanation video") is reserved for legacy video support and is currently ignored by `populateInfoModal()` (the left column of the info modal is implemented as a static PDF/thumbnail link in `index.html`). On the Israel timeline (body has the `theme-israel` class), the entire left PDF/thumbnail column (`.info-modal-video-section`) is hidden so the textual sections span the full width.
 
 ---
 

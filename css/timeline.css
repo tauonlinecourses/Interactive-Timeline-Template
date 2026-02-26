@@ -16,7 +16,7 @@
     left: 50%;
     transform: translateX(-50%);
     bottom: clamp(12px, 2vw, 24px);
-    width: 65vw;
+    width: 45vw;
     display: flex;
     align-items: center;
     gap: clamp(8px, 1.5vw, 16px);

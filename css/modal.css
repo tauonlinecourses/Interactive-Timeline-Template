@@ -493,6 +493,7 @@
     border-radius: 0;
     font-size: 12px;
     font-weight: 600;
+    font-family: 'Segoe UI';
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.1s ease;
     direction: rtl;
@@ -505,17 +506,18 @@
 
 
 #prevEventBtn {
-    clip-path: polygon(15px 0, 100% 0, 100% 100%, 0 100%);
+    clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 100%, 0 100%);
 }
 
 #nextEventBtn {
-    clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 100%, 0 100%);
-
+    clip-path: polygon(15px 0, 100% 0, 100% 100%, 0 100%);
 }
-#nextEventBtn span{
+
+#prevEventBtn span {
     margin-left: -15px;
 }
-#prevEventBtn span{
+
+#nextEventBtn span {
     margin-right: -15px;
 }
 .modal-nav-btn:hover:not(:disabled) {

@@ -1,7 +1,7 @@
 /* Events Layer - positioned above the timeline */
 .events-layer {
     position: absolute;
-    top: 60px;
+    top: 25px;
     left: 0;
     width: 100%;
     height: 700px;
@@ -28,7 +28,12 @@
     /* Angled left edge - parallelogram shape */
     clip-path: polygon(15px 0, 100% 0, 100% 100%, 0 100%);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    min-width: 30px;
+    min-width: 35px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-inline: 6px;
 }
 
 
@@ -89,7 +94,7 @@
     padding: 0;
     background: #f8fafc;
     color: #0f172a;
-    font-family: 'Ezer Meoded Pashut Condensed', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI';
     font-size: 13px;
     font-weight: 500;
     pointer-events: none;
@@ -259,9 +264,8 @@
 .video-icon img {
     width: 14px;
     height: 14px;
-    margin-top: 2px;
+    margin-top: 0;
     display: block;
-    filter: brightness(0) saturate(100%); /* Make icon dark for visibility on light background */
 }
 
 .video-icon:hover,

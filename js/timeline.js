@@ -228,7 +228,7 @@ function renderEvents() {
 
     const maxLayers = 8; // Maximum lanes to prevent infinite growth
     const isMobile = window.innerWidth < 768;
-    const layerSpacing = isMobile ? 65 : 75;
+    const layerSpacing = isMobile ? 55 : 65;
     const eventsLayerHeight = (eventsLayer?.clientHeight || eventsLayer?.offsetHeight || 800);
     const eventHeight = 30;
     const laneOccupancy = []; // Dynamic array - lanes added as needed
@@ -269,23 +269,20 @@ function renderEvents() {
             titleText.textContent = reverseHebrewEnglishTitle(event.title);
             eventTitle.appendChild(titleText);
 
-            if (event.video_url && event.video_url.trim() !== '') {
-                const videoLink = document.createElement('a');
-                videoLink.className = 'video-icon';
-                videoLink.href = event.video_url;
-                videoLink.target = '_blank';
-                videoLink.rel = 'noopener noreferrer';
-                videoLink.setAttribute('aria-label', `Watch video about ${event.title}`);
-                const videoIcon = document.createElement('img');
-                videoIcon.src = 'static/icons/video-icon-black.svg';
-                videoIcon.alt = 'Video';
-                videoLink.appendChild(videoIcon);
-                eventTitle.appendChild(videoLink);
-            }
-
-            // Create the visual block element
+            // Create the visual block element (the bar on the timeline)
             const eventBlock = document.createElement('div');
             eventBlock.className = 'event-block';
+
+            // If the event has a video, show a non-clickable video icon inside the block itself
+            if (event.video_url && event.video_url.trim() !== '') {
+                const videoIconWrapper = document.createElement('span');
+                videoIconWrapper.className = 'video-icon';
+                const videoIcon = document.createElement('img');
+                videoIcon.src = 'static/icons/video-icon-white.svg';
+                videoIcon.alt = 'Video';
+                videoIconWrapper.appendChild(videoIcon);
+                eventBlock.appendChild(videoIconWrapper);
+            }
 
             eventDiv.appendChild(eventTitle);
             eventDiv.appendChild(eventBlock);
@@ -320,10 +317,7 @@ function renderEvents() {
                 clearMinimapHighlight();
             });
 
-            eventDiv.addEventListener('click', (e) => {
-                if (e.target.closest('.video-icon')) {
-                    return;
-                }
+            eventDiv.addEventListener('click', () => {
                 showEventModal(event);
             });
 
@@ -647,12 +641,24 @@ function renderEvents() {
         }
     });
 
-    // Calculate push-up offset; use initial value from first render so timeline position stays fixed when filtering
+    // Calculate push-up offset; use a fixed baseline so the timeline line
+    // sits at the same vertical position for all timelines (match layout
+    // of the default/global timeline when it uses 8 layers).
     const baselineLayers = 9;
     const unusedLayers = Math.max(0, baselineLayers - activeLayersCount);
     const maxPushUpOffset = 160;
     const calculatedPushUp = Math.min(unusedLayers * layerSpacing, maxPushUpOffset);
-    if (fixedPushUpOffset === null) fixedPushUpOffset = calculatedPushUp;
+
+    // Baseline: assume 8 active layers on desktop, which corresponds to a
+    // single unused layer. This produces a constant vertical offset that
+    // matches the original global timeline layout.
+    const baselineActiveLayers = 8;
+    const baselineUnusedLayers = Math.max(0, baselineLayers - baselineActiveLayers);
+    const baselinePushUpOffset = Math.min(baselineUnusedLayers * layerSpacing, maxPushUpOffset);
+
+    if (fixedPushUpOffset === null) {
+        fixedPushUpOffset = baselinePushUpOffset;
+    }
     const pushUpOffset = fixedPushUpOffset;
 
     const allEventElements = eventsLayer.querySelectorAll('.event:not(.fade-out)');

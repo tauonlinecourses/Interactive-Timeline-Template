@@ -6,6 +6,21 @@ function init() {
     if (activeTimeline.themeClass) {
         document.body.classList.add(activeTimeline.themeClass);
     }
+    // Apply per-timeline title image in header and info modal (if configured)
+    const titleImageConfig = activeTimeline.titleImage;
+    const headerTitleImageEl = document.getElementById('timelineTitleImage');
+    const infoModalTitleImageEl = document.getElementById('infoModalTitleImage');
+
+    [headerTitleImageEl, infoModalTitleImageEl].forEach((imgEl) => {
+        if (!imgEl) return;
+        if (titleImageConfig && titleImageConfig.src) {
+            imgEl.src = titleImageConfig.src;
+            imgEl.alt = titleImageConfig.alt || '';
+            imgEl.style.display = 'block';
+        } else {
+            imgEl.style.display = 'none';
+        }
+    });
     // Read the color palette from CSS variables (theme class must be applied first)
     const cssPalette = readColorPaletteFromCSS();
     if (cssPalette) {

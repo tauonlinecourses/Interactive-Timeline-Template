@@ -7,13 +7,21 @@ const TIMELINES = {
         eventsFile: 'static/events-files/global-events.json',
         infoFile: 'static/events-files/info.json',
         pageTitle: 'מהי גזענות | ציר זמן גלובלי',
-        themeClass: null  // default theme, no extra class
+        themeClass: null,  // default theme, no extra class
+        titleImage: {
+            src: 'static/images/על ציר הזמן גזענות בהיסטוריה גלובלית.png',
+            alt: 'על ציר הזמן: גזענות בהיסטוריה גלובלית'
+        }
     },
     israel: {
         eventsFile: 'static/events-files/israel-events.json',
         infoFile: 'static/events-files/israel-info.json',
         pageTitle: 'מהי גזענות | ציר זמן ישראלי',
-        themeClass: 'theme-israel'
+        themeClass: 'theme-israel',
+        titleImage: {
+            src: 'static/images/על ציר הזמן גזענות בהיסטוריה של ישראל.png',
+            alt: 'על ציר הזמן: גזענות בהיסטוריה של ישראל'
+        }
     }
 };
 

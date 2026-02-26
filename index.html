@@ -21,10 +21,14 @@
         <img src="static/images/Course%20Logo%20no%20white%20bg.png" alt="Course logo">
     </a>
 
-    <!-- Info Button -->
-    <button class="info-button" id="infoBtn" aria-label="מידע על הפרויקט">
-        <span>i</span>
-    </button>
+    <!-- Info Header: Timeline title image + Info Button -->
+    <div class="info-header">
+        <button class="info-button" id="infoBtn" aria-label="מידע על הפרויקט">
+            <span>i</span>
+        </button>
+        <img id="timelineTitleImage" class="timeline-title-image" src="" alt="">
+        
+    </div>
 
     <!-- Timeline Container -->
     <div class="timeline-container">
@@ -67,9 +71,11 @@
             
             <!-- Modal Inner Content -->
             <div class="info-modal-inner">
-                <!-- Modal Header -->
-                <h2 class="info-modal-title">ציר הזמן: גזענות בהיסטוריה גלובלית</h2>
-                
+            <!-- Modal Header -->
+            <div class="info-modal-title">
+                <img id="infoModalTitleImage" class="info-modal-title-image" src="" alt="">
+            </div>
+            
                 <!-- Modal Body - Two columns -->
                 <div class="info-modal-body">
                     <!-- Left Column - Clickable image (opens PDF) -->
@@ -135,11 +141,11 @@
                         <div class="modal-links" id="modalLinks"></div>
                     </div>
                     <div class="modal-navigation">
-                        <button id="nextEventBtn" class="modal-nav-btn">
-                            <span>לאירוע הבא</span>
-                        </button>
                         <button id="prevEventBtn" class="modal-nav-btn">
                             <span>לאירוע הקודם</span>
+                        </button>
+                        <button id="nextEventBtn" class="modal-nav-btn">
+                            <span>לאירוע הבא</span>
                         </button>
                     </div>
                 </div>

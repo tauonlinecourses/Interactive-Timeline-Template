@@ -38,7 +38,7 @@
     /* Parallelogram shape - skew the button */
     transform: skewX(-15deg);
     overflow: visible;
-    font-family: 'Ezer Meoded Pashut Condensed', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI';
 }
 
 /* Unskew the text inside the button */
