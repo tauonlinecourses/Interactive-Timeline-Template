@@ -175,10 +175,11 @@
 
 .tooltip-title {
     font-size: 18px;
-    font-weight: 800;
+    font-weight: 700;
     color: #0f172a;
     line-height: 1.2;
     direction: rtl;
+    font-family: 'Segoe UI';
 }
 
 .tooltip-video-icon {
