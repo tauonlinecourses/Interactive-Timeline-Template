@@ -148,13 +148,15 @@ function renderYearLabels() {
     const useRoundedIntervals = yearLabelInterval >= 5;
 
     for (let year = minYear; year <= maxYear; year++) {
-        const isBoundaryYear = year === minYear || year === maxYear;
         const matchesInterval = useRoundedIntervals
             ? year % yearLabelInterval === 0 // Align to round numbers (e.g., 1910, 1920)
             : (year - minYear) % yearLabelInterval === 0;
 
-        // At full zoom out (centuries), skip boundary years that don't match the interval
-        const showBoundaryYear = isBoundaryYear && yearLabelInterval < 100;
+        // At full zoom out (centuries), skip boundary years that don't match the interval.
+        // For maxYear specifically, only show it when zoomed in enough (interval ≤ 2).
+        const showMinYear = year === minYear && yearLabelInterval < 100;
+        const showMaxYear = year === maxYear && yearLabelInterval <= 2;
+        const showBoundaryYear = showMinYear || showMaxYear;
         if (!showBoundaryYear && !matchesInterval) {
             continue;
         }
@@ -683,6 +685,8 @@ function renderEvents() {
     const timelineLine = scrollable.querySelector('.timeline-line');
     const timelineBottomBar = document.querySelector('.timeline-bottom-bar');
 
+    const timelineArrowRight = document.querySelector('.timeline-arrow-right');
+
     // Check if we're on mobile - skip JS positioning and let CSS handle it
     if (!isMobile) {
         // Desktop only: dynamically position timeline elements based on active layers
@@ -692,6 +696,11 @@ function renderEvents() {
 
         if (timelineLine) {
             timelineLine.style.top = `${baseTimelineLineTop - pushUpOffset}px`;
+        }
+
+        if (timelineArrowRight) {
+            // Center on the timeline line: line top + half of line height (3px)
+            timelineArrowRight.style.top = `${baseTimelineLineTop - pushUpOffset + 3}px`;
         }
 
         if (reflectionLayer) {
@@ -705,6 +714,9 @@ function renderEvents() {
         // Mobile: clear any inline styles so CSS media queries take effect
         if (timelineLine) {
             timelineLine.style.top = '';
+        }
+        if (timelineArrowRight) {
+            timelineArrowRight.style.top = '';
         }
         if (reflectionLayer) {
             reflectionLayer.style.top = '';
