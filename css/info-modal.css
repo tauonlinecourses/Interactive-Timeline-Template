@@ -49,6 +49,7 @@
     flex: 0 0 45%;
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
 /* Israel timeline: hide the PDF/thumbnail column in the info modal */
