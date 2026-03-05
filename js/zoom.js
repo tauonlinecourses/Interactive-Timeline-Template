@@ -163,7 +163,9 @@ function setupWheelZoom() {
         // Determine the year under the cursor so we can keep it centered while zooming.
         const rect = scrollable.getBoundingClientRect();
         const offsetX = event.clientX - rect.left + scrollable.scrollLeft;
-        const anchorYear = minYear + (offsetX / yearWidth);
+        const anchorYear = isRTL
+            ? maxYear - (offsetX / yearWidth)
+            : minYear + (offsetX / yearWidth);
         if (gestureAnchorYear === null) {
             gestureAnchorYear = anchorYear;
         }
@@ -242,7 +244,9 @@ function setupTouchZoom() {
             pinchCenterX = center.x;
             const rect = scrollable.getBoundingClientRect();
             const offsetX = center.x - rect.left + scrollable.scrollLeft;
-            pinchAnchorYear = minYear + (offsetX / yearWidth);
+            pinchAnchorYear = isRTL
+                ? maxYear - (offsetX / yearWidth)
+                : minYear + (offsetX / yearWidth);
 
             // Prevent default to stop browser pinch-zoom
             event.preventDefault();
@@ -262,7 +266,9 @@ function setupTouchZoom() {
             pinchCenterX = center.x;
             const rect = scrollable.getBoundingClientRect();
             const offsetX = center.x - rect.left + scrollable.scrollLeft;
-            pinchAnchorYear = minYear + (offsetX / yearWidth);
+            pinchAnchorYear = isRTL
+                ? maxYear - (offsetX / yearWidth)
+                : minYear + (offsetX / yearWidth);
         }
 
         if (!isPinching || event.touches.length !== 2) return;

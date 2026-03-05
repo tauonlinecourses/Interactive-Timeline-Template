@@ -56,6 +56,22 @@ function readColorPaletteFromCSS() {
     return palette.length > 0 ? palette : null; // null signals fallback
 }
 
+// ── RTL Timeline Direction ────────────────────────────────────────────────────
+// When true, the timeline flows right-to-left: newest events on the LEFT,
+// oldest on the RIGHT. Matches Hebrew reading direction.
+const isRTL = true;
+
+/**
+ * Converts a year to its pixel left-position within the scrollable container.
+ * In LTR: older years are further left. In RTL: newer years are further left.
+ * NOTE: maxYear must be set before calling this (it is set by data-loader.js).
+ */
+function yearToLeft(year) {
+    return isRTL
+        ? (maxYear - year) * yearWidth
+        : (year - minYear) * yearWidth;
+}
+
 // Timeline Configuration
 let yearWidth = 3.57; // Default width per year in pixels (max zoom out)
 const minEventLabelWidth = 0; // Hide inline content on narrower blocks

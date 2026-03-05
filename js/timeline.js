@@ -125,9 +125,13 @@ function renderTimeline(scrollToEnd = false, centerYear = null) {
 
     setTimeout(() => {
         if (scrollToEnd) {
-            scrollable.scrollLeft = scrollable.scrollWidth - scrollable.clientWidth;
+            // RTL: newest events are at left (scrollLeft = 0) — no scrolling needed.
+            // LTR: scroll to the right end to show newest events.
+            if (!isRTL) {
+                scrollable.scrollLeft = scrollable.scrollWidth - scrollable.clientWidth;
+            }
         } else if (centerYear !== null) {
-            const newCenterPosition = (centerYear - minYear) * yearWidth;
+            const newCenterPosition = yearToLeft(centerYear);
             const targetScrollLeft = newCenterPosition - scrollable.clientWidth / 2;
             const maxScroll = scrollable.scrollWidth - scrollable.clientWidth;
             scrollable.scrollLeft = Math.max(0, Math.min(targetScrollLeft, maxScroll));
@@ -165,7 +169,7 @@ function renderYearLabels() {
         yearLabel.className = 'year-label';
         yearLabel.textContent = year;
 
-        const leftPosition = (year - minYear) * yearWidth;
+        const leftPosition = yearToLeft(year);
         yearLabel.style.left = `${leftPosition}px`;
 
         yearLabel.style.width = `${yearWidth}px`;
@@ -301,7 +305,10 @@ function renderEvents() {
             eventDiv.addEventListener('mouseenter', (e) => {
                 const { currentWidth, currentLeft } = getCurrentEventMetrics();
                 const reflectionWidth = Math.max(currentWidth - 10, 0);
-                showReflectionBlock(event.start_year, event.end_year, eventColor, currentLeft, reflectionWidth);
+                const reflectionLeft = isRTL
+                    ? (maxYear - event.end_year) * yearWidth
+                    : currentLeft;
+                showReflectionBlock(event.start_year, event.end_year, eventColor, reflectionLeft, reflectionWidth);
                 const followCursor = eventDurationYears >= 15;
                 const laneIndex = parseInt(eventDiv.getAttribute('data-lane-index') || '0', 10);
                 const placement = laneIndex >= 7 ? 'below' : 'above';
@@ -379,13 +386,16 @@ function renderEvents() {
             }
         }
 
-        const leftPosition = (event.start_year - minYear) * yearWidth;
+        const leftPosition = isRTL
+            ? (maxYear - event.end_year) * yearWidth
+            : (event.start_year - minYear) * yearWidth;
         eventDiv.style.left = `${leftPosition}px`;
 
-        // Set z-index so older events (further left) appear above newer events (further right)
-        // Older events get higher z-index values
+        // Set z-index so left events appear above right events (regardless of which are newer/older)
         const baseZIndex = 1;
-        const zIndex = (maxYear - event.start_year) + baseZIndex;
+        const zIndex = isRTL
+            ? (event.start_year - minYear) + baseZIndex  // RTL: newer (left) events get higher z-index
+            : (maxYear - event.start_year) + baseZIndex; // LTR: older (left) events get higher z-index
         eventDiv.style.zIndex = zIndex;
 
         // Minimum gap between events on the same lane (in pixels)
@@ -466,35 +476,54 @@ function renderEvents() {
             const eventDiv = eventsLayer.querySelector(`.event[data-event-index="${eventIndex}"]`);
             const eventDurationYears = event.end_year - event.start_year + 1;
             const eventWidthPx = Math.max(eventDurationYears * yearWidth - 10, 0);
-            const naturalLeftPx = (event.start_year - minYear) * yearWidth;
+            const naturalLeftPx = isRTL
+                ? (maxYear - event.end_year) * yearWidth
+                : (event.start_year - minYear) * yearWidth;
             return { eventIndex, event, eventDiv, eventWidthPx, naturalLeftPx };
         });
-        
-        // Sort by start year descending (rightmost/newest first)
-        topLayerEvents.sort((a, b) => b.event.start_year - a.event.start_year);
-        
-        // Process from right to left - keep rightmost in place, shift others left
-        let leftmostAllowedRight = null; // The leftmost point where the next event's right edge can be
-        
-        for (const item of topLayerEvents) {
-            const { eventDiv, eventWidthPx, naturalLeftPx } = item;
-            
-            if (leftmostAllowedRight === null) {
-                // First (rightmost) event stays in place
-                leftmostAllowedRight = naturalLeftPx - topLayerMinGapPx;
-                // Position is already set, no change needed
-            } else {
-                // Calculate where this event's right edge would be naturally
-                const naturalRightPx = naturalLeftPx + eventWidthPx;
-                
-                if (naturalRightPx > leftmostAllowedRight) {
-                    // Need to shift this event to the left
-                    const newLeftPx = Math.max(0, leftmostAllowedRight - eventWidthPx);
-                    eventDiv.style.left = `${newLeftPx}px`;
-                    leftmostAllowedRight = newLeftPx - topLayerMinGapPx;
+
+        if (isRTL) {
+            // RTL: keep leftmost (newest) in place, shift older events rightward as needed
+            topLayerEvents.sort((a, b) => b.event.end_year - a.event.end_year);
+
+            let rightmostAllowedLeft = null;
+            for (const item of topLayerEvents) {
+                const { eventDiv, eventWidthPx, naturalLeftPx } = item;
+
+                if (rightmostAllowedLeft === null) {
+                    // First (leftmost/newest) event stays in place
+                    rightmostAllowedLeft = naturalLeftPx + eventWidthPx + topLayerMinGapPx;
                 } else {
-                    // Event already has enough space, keep natural position
+                    if (naturalLeftPx < rightmostAllowedLeft) {
+                        // Shift this event rightward to clear the previous one
+                        const newLeftPx = rightmostAllowedLeft;
+                        eventDiv.style.left = `${newLeftPx}px`;
+                        rightmostAllowedLeft = newLeftPx + eventWidthPx + topLayerMinGapPx;
+                    } else {
+                        rightmostAllowedLeft = naturalLeftPx + eventWidthPx + topLayerMinGapPx;
+                    }
+                }
+            }
+        } else {
+            // LTR: keep rightmost (newest) in place, shift older events leftward as needed
+            topLayerEvents.sort((a, b) => b.event.start_year - a.event.start_year);
+
+            let leftmostAllowedRight = null;
+            for (const item of topLayerEvents) {
+                const { eventDiv, eventWidthPx, naturalLeftPx } = item;
+
+                if (leftmostAllowedRight === null) {
+                    // First (rightmost) event stays in place
                     leftmostAllowedRight = naturalLeftPx - topLayerMinGapPx;
+                } else {
+                    const naturalRightPx = naturalLeftPx + eventWidthPx;
+                    if (naturalRightPx > leftmostAllowedRight) {
+                        const newLeftPx = Math.max(0, leftmostAllowedRight - eventWidthPx);
+                        eventDiv.style.left = `${newLeftPx}px`;
+                        leftmostAllowedRight = newLeftPx - topLayerMinGapPx;
+                    } else {
+                        leftmostAllowedRight = naturalLeftPx - topLayerMinGapPx;
+                    }
                 }
             }
         }
@@ -527,24 +556,23 @@ function renderEvents() {
         const eventWidth = eventDurationYears * yearWidth;
         const adjustedWidth = Math.max(eventWidth - 10, 0);
         
-        // At full zoom out, hide title if there's an event within 100px before it in the same lane
+        // At full zoom out, hide title if there's an event within 100px in the direction the title extends
         if (isFullZoomOut) {
             const laneIndex = parseInt(eventDiv.getAttribute('data-lane-index'), 10);
             const thisLeftPx = parseFloat(eventDiv.style.left) || 0;
             const maxGapPxForTitle = 100;
-            
+
             if (!isNaN(laneIndex) && laneEventsByIndex[laneIndex]) {
                 const hasCloseEventBefore = laneEventsByIndex[laneIndex].some(otherEventIndex => {
                     if (otherEventIndex === eventIndex) return false; // Skip self
                     const otherEventDiv = eventDivMap.get(otherEventIndex);
                     if (!otherEventDiv) return false;
-                    
+
                     const otherLeftPx = parseFloat(otherEventDiv.style.left) || 0;
                     const otherWidthPx = parseFloat(otherEventDiv.style.width) || 0;
                     const otherRightPx = otherLeftPx + otherWidthPx;
-                    
-                    // Check if this other event ends before our event starts (is before us)
-                    // and the gap between its right edge and our left edge is <= 100px
+
+                    // Title extends leftward from right edge (both LTR and RTL); hide if there's a close event to the LEFT
                     if (otherRightPx <= thisLeftPx) {
                         const gapPx = thisLeftPx - otherRightPx;
                         return gapPx <= maxGapPxForTitle;
@@ -552,7 +580,7 @@ function renderEvents() {
                     return false;
                 });
                 
-                if (hasCloseEventBefore) {
+                if (hasCloseEventBefore && adjustedWidth < minTitleWidth) {
                     const titleEl = eventDiv.querySelector('.event-title');
                     if (titleEl) {
                         titleEl.style.display = 'none';
@@ -573,11 +601,17 @@ function renderEvents() {
                     if (otherEventIndex === eventIndex) return false; // Skip self
                     const otherEvent = visibleEventMap.get(otherEventIndex);
                     if (!otherEvent) return false;
-                    // Only check events that end before the current event starts (previous events)
-                    if (otherEvent.end_year >= event.start_year) return false;
-                    // Calculate gap: current event's first year - previous event's last year
-                    const yearGap = event.start_year - otherEvent.end_year;
-                    return yearGap > 0 && yearGap <= nearbyYearsThreshold;
+                    if (isRTL) {
+                        // RTL: title extends leftward (into newer events to the LEFT); check nearby newer events
+                        if (otherEvent.start_year <= event.end_year) return false;
+                        const yearGap = otherEvent.start_year - event.end_year;
+                        return yearGap > 0 && yearGap <= nearbyYearsThreshold;
+                    } else {
+                        // LTR: title extends leftward (into older events to the LEFT); check nearby older events
+                        if (otherEvent.end_year >= event.start_year) return false;
+                        const yearGap = event.start_year - otherEvent.end_year;
+                        return yearGap > 0 && yearGap <= nearbyYearsThreshold;
+                    }
                 });
 
                 // Hide title if there's a nearby event in the same lane
@@ -602,10 +636,12 @@ function renderEvents() {
         }
     });
 
-    // Title truncation: limit title width so it does not overlap the previous event in the same lane
+    // Title truncation: limit title width so it does not overlap the adjacent event in the same lane.
     // (Uses final positions including top-layer repositioning; .event-title-text uses CSS ellipsis)
-    const titlePaddingLeft = 15; // Match .event-title padding-left in events.css
-    const titleSafetyBuffer = 10; // Minimum gap before previous event
+    // In LTR: title extends right, limit by nearest older event to the LEFT.
+    // In RTL: title extends right from the event's left edge, limit by nearest older event to the RIGHT.
+    const titlePaddingLeft = 15; // Match .event-title padding in events.css (padding-left in LTR, padding-right in RTL)
+    const titleSafetyBuffer = 10; // Minimum gap before adjacent event
     const defaultTitleMaxWidth = 500; // Match .event-title max-width in events.css
     visibleEventMap.forEach((event, eventIndex) => {
         const eventDiv = eventDivMap.get(eventIndex);
@@ -614,26 +650,56 @@ function renderEvents() {
 
         const laneIndex = parseInt(eventDiv.getAttribute('data-lane-index'), 10);
         const eventLeftPx = parseFloat(eventDiv.style.left) || 0;
-
-        let previousEventRightPx = 0;
-        if (!isNaN(laneIndex) && laneEventsByIndex[laneIndex]) {
-            laneEventsByIndex[laneIndex].forEach(otherEventIndex => {
-                if (otherEventIndex === eventIndex) return;
-                const otherEvent = visibleEventMap.get(otherEventIndex);
-                const otherEventDiv = eventDivMap.get(otherEventIndex);
-                if (!otherEvent || !otherEventDiv) return;
-                if (otherEvent.end_year >= event.start_year) return;
-                const otherLeftPx = parseFloat(otherEventDiv.style.left) || 0;
-                const otherWidthPx = parseFloat(otherEventDiv.style.width) || 0;
-                const otherRightPx = otherLeftPx + otherWidthPx;
-                previousEventRightPx = Math.max(previousEventRightPx, otherRightPx);
-            });
-        }
+        const eventWidthPx = parseFloat(eventDiv.style.width) || 0;
 
         const titleEl = eventDiv.querySelector('.event-title');
         const titleTextEl = eventDiv.querySelector('.event-title-text');
-        if (titleEl && titleTextEl) {
-            const eventWidthPx = parseFloat(eventDiv.style.width) || 0;
+        if (!titleEl || !titleTextEl) return;
+
+        if (isRTL) {
+            // RTL: title aligns to the RIGHT edge of the event and extends leftward.
+            // Limit width so it doesn't overlap the nearest NEWER event to the LEFT.
+            let nearestNewerEventRightPx = 0;
+            if (!isNaN(laneIndex) && laneEventsByIndex[laneIndex]) {
+                laneEventsByIndex[laneIndex].forEach(otherEventIndex => {
+                    if (otherEventIndex === eventIndex) return;
+                    const otherEvent = visibleEventMap.get(otherEventIndex);
+                    const otherEventDiv = eventDivMap.get(otherEventIndex);
+                    if (!otherEvent || !otherEventDiv) return;
+                    // Only consider newer events (that start after current event ends)
+                    if (otherEvent.start_year <= event.end_year) return;
+                    const otherLeftPx = parseFloat(otherEventDiv.style.left) || 0;
+                    const otherWidthPx = parseFloat(otherEventDiv.style.width) || 0;
+                    const otherRightPx = otherLeftPx + otherWidthPx;
+                    // Newer events appear to the LEFT (smaller left value) in RTL
+                    if (otherLeftPx < eventLeftPx) {
+                        nearestNewerEventRightPx = Math.max(nearestNewerEventRightPx, otherRightPx);
+                    }
+                });
+            }
+            const eventRightPx = eventLeftPx + eventWidthPx;
+            const availableWidth = eventRightPx - nearestNewerEventRightPx - titlePaddingLeft - titleSafetyBuffer;
+            if (nearestNewerEventRightPx > 0 && availableWidth < defaultTitleMaxWidth) {
+                titleTextEl.style.maxWidth = `${Math.max(0, Math.floor(availableWidth))}px`;
+            } else {
+                titleTextEl.style.maxWidth = '';
+            }
+        } else {
+            // LTR: title aligns to the RIGHT edge of the event. Limit by nearest older event to the LEFT.
+            let previousEventRightPx = 0;
+            if (!isNaN(laneIndex) && laneEventsByIndex[laneIndex]) {
+                laneEventsByIndex[laneIndex].forEach(otherEventIndex => {
+                    if (otherEventIndex === eventIndex) return;
+                    const otherEvent = visibleEventMap.get(otherEventIndex);
+                    const otherEventDiv = eventDivMap.get(otherEventIndex);
+                    if (!otherEvent || !otherEventDiv) return;
+                    if (otherEvent.end_year >= event.start_year) return;
+                    const otherLeftPx = parseFloat(otherEventDiv.style.left) || 0;
+                    const otherWidthPx = parseFloat(otherEventDiv.style.width) || 0;
+                    const otherRightPx = otherLeftPx + otherWidthPx;
+                    previousEventRightPx = Math.max(previousEventRightPx, otherRightPx);
+                });
+            }
             const availableWidth = (eventLeftPx + eventWidthPx) - previousEventRightPx - titlePaddingLeft - titleSafetyBuffer;
             if (previousEventRightPx > 0 && availableWidth < defaultTitleMaxWidth) {
                 titleTextEl.style.maxWidth = `${Math.max(0, Math.floor(availableWidth))}px`;
@@ -796,18 +862,22 @@ function updateStickyEventTitles(animateAfterScroll = false, previousPositions =
 
         // Get event position and width from inline styles
         const eventLeft = parseFloat(eventDiv.style.left) || 0;
-        let eventWidth = parseFloat(eventDiv.style.width) || 0;
-        
-        // For min-width events, use the actual rendered width of the event-block (which has min-width: 30px in CSS)
-        // This ensures title aligns with the visual right edge, not the styled width which may be 0
+        const inlineWidth = parseFloat(eventDiv.style.width) || 0;
+        let eventWidth = inlineWidth;
+
+        // For min-width events, use the actual rendered width of the event-block (which has min-width: 35px in CSS)
+        // This ensures title aligns with the visual right edge, not the styled width which may be tiny
         if (isMinWidthEvent) {
             const eventBlockEl = eventDiv.querySelector('.event-block');
             if (eventBlockEl) {
                 eventWidth = eventBlockEl.offsetWidth;
             }
         }
-        
+
         const eventRight = eventLeft + eventWidth;
+        // The .event-title has `right: 0` relative to the .event div, so its CSS-natural right edge
+        // aligns with the .event div's inline width — not the rendered block width.
+        const cssAnchorRight = eventLeft + inlineWidth;
 
         // Measure title width (need to temporarily reset transform to get accurate measurement)
         const currentTransform = titleEl.style.transform;
@@ -815,10 +885,10 @@ function updateStickyEventTitles(animateAfterScroll = false, previousPositions =
         const titleWidth = titleEl.offsetWidth;
         titleEl.style.transform = currentTransform;
 
-        // Calculate desired title position
-        // Default: align to the right edge of the event block
+        // Calculate desired title position.
+        // Default: align to the visual right edge of the event block.
         let desiredTitleX = eventRight - titleWidth;
-        
+
         // If the default position would be outside the viewport, prefer center of viewport
         if (desiredTitleX > viewRight - padding - titleWidth || desiredTitleX < viewLeft + padding) {
             // Prefer viewport center
@@ -833,8 +903,10 @@ function updateStickyEventTitles(animateAfterScroll = false, previousPositions =
         desiredTitleX = Math.max(desiredTitleX, eventLeft);
         desiredTitleX = Math.min(desiredTitleX, eventRight - titleWidth);
 
-        // Apply transform relative to event's left position
-        const translateX = desiredTitleX - eventLeft;
+        // Apply transform relative to title's CSS natural position.
+        // For min-width events the .event div's inline width is smaller than the rendered block,
+        // so we must offset from cssAnchorRight (inline width) rather than eventRight (block width).
+        const translateX = desiredTitleX - (cssAnchorRight - titleWidth);
         
         // Min-width events: update position normally without animation
         if (isMinWidthEvent) {

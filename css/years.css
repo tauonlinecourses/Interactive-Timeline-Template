@@ -21,27 +21,31 @@
     transform: translateY(-50%);
 }
 
+/* RTL: the "start" (oldest) of the timeline is on the RIGHT */
 .timeline-line::before {
-    left: 2px;
-    transform: translate(-50%, -50%); /* Center the cap on the very start */
+    right: 2px;
+    left: auto;
+    transform: translate(50%, -50%); /* Center the cap on the very end */
 }
 
-/* Suppress the old right cap — replaced by .timeline-arrow-right */
+/* Suppress the old left cap — replaced by .timeline-arrow-right */
 .timeline-line::after {
     display: none;
 }
 
-/* Right arrow — always visible at the right edge of the container */
+/* RTL: arrow points LEFT at the LEFT edge of the container (newest = leftmost) */
 .timeline-arrow-right {
     position: absolute;
-    right: 0;
+    left: 0;
+    right: auto;
     top: 783px; /* Fallback — overridden by JS to track the timeline line */
     transform: translateY(-50%);
     width: 0;
     height: 0;
     border-top: 13px solid transparent;
     border-bottom: 13px solid transparent;
-    border-left: 20px solid #333;
+    border-right: 20px solid #333; /* right border = left-pointing triangle */
+    border-left: none;
     z-index: 10;
     pointer-events: none;
 }
@@ -89,18 +93,21 @@
     font-size: 16px;
     font-weight: 600;
     color: #333;
-    border-left: 1px solid #ccc;
+    /* RTL: tick mark on the RIGHT side of each label (matches RTL flow) */
+    border-right: 1px solid #ccc;
+    border-left: none;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
     border-radius: 4px;
     padding: 2px 0;
 }
 
-.year-label:first-child {
-    border-left: none;
+/* RTL: last DOM child = minYear (oldest) = visually rightmost — no tick needed */
+.year-label:last-child {
+    border-right: none;
 }
 
 .years-layer.condensed-labels .year-label {
-    border-left: none;
+    border-right: none;
 }
 
 /* Glow effect for year labels when hovering over related events */
