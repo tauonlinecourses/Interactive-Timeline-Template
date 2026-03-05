@@ -2,12 +2,12 @@
 .timeline-container {
     position: relative;
     width: 100%;
-    margin-top: 40px;
+    margin-top: var(--tl-margin-top);
     /* Horizontal padding creates a visual side margin for the
        whole timeline (events, line, years) without affecting
        the internal zoom/scroll calculations in JS. */
     padding-inline: clamp(2px, .4vw, 7px);
-    height: 850px;
+    height: var(--tl-height);
     cursor: default; /* Avoid showing drag cursor on the wrapper */
 }
 

@@ -391,3 +391,36 @@
         height: 100px; /* Smaller hero in landscape for more content space */
     }
 }
+
+/* ==================== LAPTOP / SHORT DESKTOP (height-based) ==================== */
+/*
+   These breakpoints target desktop-class viewports (width > 1024px) where the
+   viewport height is not tall enough to accommodate the 850px fixed container.
+   Only --tl-height is overridden; all derived positions (line, arrow, reflection,
+   years, events-height) recalculate automatically via the variables in base.css.
+*/
+
+/* Large laptops / short desktops: e.g. 1366×768, 1440×900 */
+@media (min-width: 1025px) and (max-height: 900px) {
+    :root {
+        --tl-height: max(600px, calc(100vh - var(--tl-margin-top) - var(--tl-bottom-reserved)));
+        --tl-events-line-gap: 25px;
+        --tl-line-bottom-gap: 60px;
+    }
+}
+
+/* Very short laptop screens: e.g. 1280×720, 1366×768 at 125% DPI */
+@media (min-width: 1025px) and (max-height: 750px) {
+    :root {
+        --tl-height: max(520px, calc(100vh - var(--tl-margin-top) - var(--tl-bottom-reserved)));
+        --tl-events-line-gap: 15px;
+        --tl-line-bottom-gap: 60px;
+    }
+    /* Reclaim ~25px of vertical space by moving categories up slightly */
+    .categories-menu {
+        top: 75px;
+    }
+    .category-btn {
+        height: 28px;
+    }
+}

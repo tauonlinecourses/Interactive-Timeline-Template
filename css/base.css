@@ -48,6 +48,26 @@
     --category-16-color: #4F46E5;
 }
 
+/* ── Timeline Layout Dimensions (CSS Custom Properties) ─────────────
+   Single source of truth for the vertical geometry of the desktop
+   timeline. Override only --tl-height in media queries; all derived
+   positions recalculate automatically. */
+:root {
+    --tl-margin-top:       40px;
+    --tl-height:           850px;
+    --tl-events-top:       25px;
+    --tl-line-bottom-gap:  70px;   /* gap from container bottom to timeline line */
+    --tl-events-line-gap:  55px;   /* gap between events-bottom and timeline line */
+    --tl-bottom-reserved:  110px;  /* fixed bottom bar height + its bottom margin */
+
+    /* Derived — all cascade automatically from --tl-height */
+    --tl-line-top:         calc(var(--tl-height) - var(--tl-line-bottom-gap));
+    --tl-arrow-top:        calc(var(--tl-line-top) + 3px);
+    --tl-reflection-top:   calc(var(--tl-line-top) + 6px);
+    --tl-years-top:        calc(var(--tl-line-top) + 10px);
+    --tl-events-height:    calc(var(--tl-line-top) - var(--tl-events-top) - var(--tl-events-line-gap));
+}
+
 body {
     font-family: 'Segoe UI';
     background-color: #f5f5f5;

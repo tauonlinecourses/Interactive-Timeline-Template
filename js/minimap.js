@@ -404,6 +404,21 @@ function setupMinimapInteractions() {
     });
     minimapCanvas.addEventListener('click', (event) => handleMinimapNavigation(event.clientX));
 
+    // Touch support — mirrors the mouse handlers so the minimap works on
+    // touchscreen laptops and in DevTools device-emulation mode.
+    minimapCanvas.addEventListener('touchstart', (event) => {
+        if (!event.touches.length) return;
+        minimapDragging = true;
+        handleMinimapNavigation(event.touches[0].clientX);
+        event.preventDefault();
+    }, { passive: false });
+    window.addEventListener('touchmove', (event) => {
+        if (!minimapDragging || !event.touches.length) return;
+        handleMinimapNavigation(event.touches[0].clientX);
+        event.preventDefault();
+    }, { passive: false });
+    window.addEventListener('touchend', endDrag);
+
     if (minimapViewport) {
         let leftHandle = minimapViewport.querySelector('.minimap-handle.left');
         let rightHandle = minimapViewport.querySelector('.minimap-handle.right');
@@ -422,10 +437,26 @@ function setupMinimapInteractions() {
 
         leftHandle.addEventListener('mousedown', startResize('left'));
         rightHandle.addEventListener('mousedown', startResize('right'));
+        leftHandle.addEventListener('touchstart', (event) => {
+            if (!event.touches.length) return;
+            startResize('left')(event.touches[0]);
+            event.preventDefault();
+        }, { passive: false });
+        rightHandle.addEventListener('touchstart', (event) => {
+            if (!event.touches.length) return;
+            startResize('right')(event.touches[0]);
+            event.preventDefault();
+        }, { passive: false });
     }
 
     window.addEventListener('mousemove', moveResize);
     window.addEventListener('mouseup', endDrag);
+    window.addEventListener('touchmove', (event) => {
+        if (!minimapResizingSide || !event.touches.length) return;
+        resizeMinimapViewport(minimapResizingSide, event.touches[0].clientX);
+        event.preventDefault();
+    }, { passive: false });
+    window.addEventListener('touchend', endDrag);
 
     refreshMinimap({ redraw: true });
 }

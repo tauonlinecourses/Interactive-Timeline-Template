@@ -756,9 +756,17 @@ function renderEvents() {
     // Check if we're on mobile - skip JS positioning and let CSS handle it
     if (!isMobile) {
         // Desktop only: dynamically position timeline elements based on active layers
-        const baseTimelineLineTop = 780;
-        const baseReflectionLayerTop = 786;
-        const baseYearsLayerTop = 790;
+        // Derive positions from the container's actual rendered height (resolves
+        // all CSS calc/max/media-query values) rather than reading CSS variables
+        // directly (custom properties return their literal string, not px values).
+        const container = document.querySelector('.timeline-container');
+        const containerH = (container ? container.offsetHeight : 0) || 850;
+        // Read --tl-line-bottom-gap from CSS (plain px value, resolves correctly via getPropertyValue)
+        const rootStyles = getComputedStyle(document.documentElement);
+        const lineBottomGap = parseFloat(rootStyles.getPropertyValue('--tl-line-bottom-gap')) || 70;
+        const baseTimelineLineTop    = containerH - lineBottomGap;
+        const baseReflectionLayerTop = baseTimelineLineTop + 6;
+        const baseYearsLayerTop      = baseTimelineLineTop + 10;
 
         if (timelineLine) {
             timelineLine.style.top = `${baseTimelineLineTop - pushUpOffset}px`;
