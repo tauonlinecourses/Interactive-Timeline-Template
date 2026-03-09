@@ -337,15 +337,15 @@
     .timeline-container {
         height: 700px;
     }
-    
+
     .events-layer {
         height: 600px;
     }
-    
+
     .timeline-bottom-bar {
         width: 80vw;
     }
-    
+
     .category-btn {
         width: 135px;
     }
@@ -405,7 +405,15 @@
     :root {
         --tl-height: max(600px, calc(100vh - var(--tl-margin-top) - var(--tl-bottom-reserved)));
         --tl-events-line-gap: 25px;
-        --tl-line-bottom-gap: 60px;
+        --tl-line-bottom-gap: 15px;
+    }
+    /* Push timeline down so the line aligns near the minimap.
+       margin-top: 98px is derived so that with justify-content:center on body
+       and a flexible container height of (100vh - 150px), the line always
+       lands at ~y=124 + (containerH - lineBottomGap - pushUpOffset) ≈ minimap top.
+       Body layout is untouched — regular tall-monitor PC is unaffected. */
+    .timeline-container {
+        margin-top: 98px;
     }
 }
 
@@ -414,7 +422,7 @@
     :root {
         --tl-height: max(520px, calc(100vh - var(--tl-margin-top) - var(--tl-bottom-reserved)));
         --tl-events-line-gap: 15px;
-        --tl-line-bottom-gap: 60px;
+        --tl-line-bottom-gap: 15px;
     }
     /* Reclaim ~25px of vertical space by moving categories up slightly */
     .categories-menu {
