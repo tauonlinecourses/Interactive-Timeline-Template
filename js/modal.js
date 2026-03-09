@@ -219,7 +219,7 @@ function showEventModal(event, options = {}) {
     if (event.start_year === event.end_year) {
         modalYears.textContent = event.start_year.toString();
     } else {
-        modalYears.textContent = `${event.start_year}-${event.end_year}`;
+        modalYears.textContent = `${event.start_year}־${event.end_year}`;
     }
 
     modalCategories.innerHTML = '';

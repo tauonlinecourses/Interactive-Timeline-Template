@@ -75,7 +75,7 @@ function buildTooltipDescription(event, maxLength = 110) {
 function buildTooltipHTML(event) {
     const yearsText = event.start_year === event.end_year
         ? `${event.start_year}`
-        : `${event.start_year}-${event.end_year}`;
+        : `${event.start_year}־${event.end_year}`;
 
     const categoryCircles = (event.categories || []).map(category => {
         const color = categoryColors[category] || defaultColor;
