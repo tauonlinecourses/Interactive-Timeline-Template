@@ -1,18 +1,28 @@
 [
   {
-    "title": "התרחבות הקולוניאליזם",
-    "start_year": 1500,
-    "end_year": 1945,
+    "title": "יצירת Repository חדש בGitHub",
+    "start_year": 1910,
+    "end_year": 1920,
     "video_url": "",
     "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/World_1898_empires_colonies_territory.png",
     "links": [
-      "https://www.britannica.com/topic/social-Darwinism",
-      "https://www.britannica.com/topic/Western-colonialism",
-      "https://jimcrowmuseum.ferris.edu/question/2006/october.htm"
+      "https://github.com/tauonlinecourses/Interactive-Timeline"
     ],
     "descriptions": {
-      "GitHub": "הקמת מושבות, ניצול משאבים ושליטה על מסחר לטובת המדינה השלטת. מוסדות ותרבות אירופיים הוטמעו באזורים נכבשים ויצרו מערכות דיכוי ואי-שוויון עמוקות.",
-      "Google Sheets": "1. הדרוויניזם החברתי (סוף המאה ה-19), שהופץ על ידי דמויות כמו הרברט ספנסר, יישם את רעיון \"הישרדות הכשירים ביותר\" על חברות אנושיות והצדיק אי-שוויון גזעי, קולוניאליזם ואימפריאליזם. הוא ביסס את הרעיון של עליונות גזעים כמו האנגלו-סקסים והארים. \n2. בתערוכות פופולריות שהתקיימו בין סוף המאה ה-19 לאמצע המאה ה-20, הוצגו בני אדם מאפריקה, אסיה ואמריקה הלטינית בתפאורה מבוימת כ\"פרימיטיביים\". המופעים נשענו על אידאולוגיות כמו גזענות מדעית ודרוויניזם חברתי, אשר תיארו עמים לא-אירופיים כנחותים אבולוציונית. גני החיות האנושיים שימשו הן כבידור המוני והן כתעמולה גזענית, ויצרו דה-הומניזציה מוחלטת של הנצפים."
+      "GitHub": "כנסו לקישור שמופיע בתחתית העמוד, זהו עמוד הGitHub של הTemplate של ציר הזמן.\nאת הTemplate שכפלו לrepository חדש בGitHub של הדקאנט"
+    }
+  },
+  {
+    "title": "יצירת קובץ Google Sheest לציר הזמן החדש",
+    "start_year": 1920,
+    "end_year": 1930,
+    "video_url": "",
+    "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/World_1898_empires_colonies_territory.png",
+    "links": [
+      "https://docs.google.com/spreadsheets/d/1-lU914O0T9496jT4Ln2PV7m5htD7zmy5ClMr-QmOiL8"
+    ],
+    "descriptions": {
+      "Google Sheets": "העתקת קובץ הgoogle sheets של הtemplate, הסקריפט מועתק באופן אוטומטי."
     }
   }
 ]
