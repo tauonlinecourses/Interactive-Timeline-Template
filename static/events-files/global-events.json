@@ -2,7 +2,7 @@
   {
     "title": "התחילו כאן",
     "start_year": 1900,
-    "end_year": 1930,
+    "end_year": 1940,
     "video_url": "",
     "image_url": "https://github.com/tauonlinecourses/Interactive-Timeline-Template/blob/main/static/images/%D7%AA%D7%9E%D7%95%D7%A0%D7%95%D7%AA%20%D7%9C%D7%9E%D7%93%D7%A8%D7%99%D7%9A/%D7%AA%D7%AA%D7%97%D7%99%D7%9C%D7%95%20%D7%A4%D7%94.png?raw=true",
     "links": [
@@ -15,7 +15,7 @@
   {
     "title": "1. יצירת ציר זמן חדש",
     "start_year": 1910,
-    "end_year": 1930,
+    "end_year": 1940,
     "video_url": "",
     "image_url": "https://github.com/tauonlinecourses/Interactive-Timeline-Template/blob/main/static/images/%D7%AA%D7%9E%D7%95%D7%A0%D7%95%D7%AA%20%D7%9C%D7%9E%D7%93%D7%A8%D7%99%D7%9A/1.%20%D7%99%D7%A6%D7%99%D7%A8%D7%AA%20%D7%A6%D7%99%D7%A8%20%D7%96%D7%9E%D7%9F%20%D7%97%D7%93%D7%A9.png?raw=true",
     "links": [
@@ -26,16 +26,24 @@
     }
   },
   {
-    "title": "2. יצירת קובץ Google Sheets חדש",
+    "title": "2. יצירת קובץ נתונים חדש",
     "start_year": 1920,
-    "end_year": 1930,
+    "end_year": 1940,
     "video_url": "",
-    "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/World_1898_empires_colonies_territory.png",
+    "image_url": "",
     "links": [
       "https://docs.google.com/spreadsheets/d/1-lU914O0T9496jT4Ln2PV7m5htD7zmy5ClMr-QmOiL8"
     ],
     "descriptions": {
-      "Google Sheets": "העתקת קובץ הgoogle sheets של הtemplate, הסקריפט מועתק באופן אוטומטי."
+      "Google Sheets": "עכשיו אחרי שיצרנו פרויקט ציר זמן חדש עלינו ליצור קובץ Google Sheets חדש ממנו נערוך את תוכן ציר הזמן.\nעל מנת לעשות זאת תצטרכו להתחבר למשתמש הGoogle של הדקאנט.\n\nלאחר שהתחברתם למשתמש, היכנסו לקישור המופיע בקריאה נוספת, זהו הקובץ של ציר הזמן הזה (לא לערוך או למחוק אותו בטעות).\nשכפלו אותו: קובץ -> יצירת קובץ וקראו לו בשם של הקורס + ציר זמן\n\n"
     }
+  },
+  {
+    "title": "3. חיבור קובץ הנתונים לציר הזמן",
+    "start_year": 1930,
+    "end_year": 1940,
+    "video_url": "",
+    "image_url": "",
+    "links": []
   }
 ]
