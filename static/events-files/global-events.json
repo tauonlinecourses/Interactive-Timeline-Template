@@ -1,19 +1,32 @@
 [
   {
-    "title": "יצירת Repository חדש בGitHub",
+    "title": "תתחילו כאן",
+    "start_year": 1900,
+    "end_year": 1910,
+    "video_url": "",
+    "image_url": "https://github.com/tauonlinecourses/Interactive-Timeline-Template/blob/main/static/images/%D7%AA%D7%9E%D7%95%D7%A0%D7%95%D7%AA%20%D7%9C%D7%9E%D7%93%D7%A8%D7%99%D7%9A/%D7%AA%D7%AA%D7%97%D7%99%D7%9C%D7%95%20%D7%A4%D7%94.png?raw=true",
+    "links": [
+      "https://tauonlinecourses.github.io/Interactive-Timeline/"
+    ],
+    "descriptions": {
+      "עמוד ציר הזמן": "ברוכים הבאים למדריך המלא ליצירת ציר זמן אינטרקטיבי.\nואיזו דרך טובה יותר ללמוד ליצור ציר זמן מאשר דרך ציר הזמן עצמו?\n\nהמדריך מסביר באופן מפורט איך ליצור עמוד ציר זמן לקורס שלכם ללא צורך בידע בקוד.\nכל \"אירוע\" על ציר הזמן הזה הוא שלב בתהליך יצירת ציר הזמן אז חשוב לעבור על השלבים על פי הסדר בציר על מנת שהכל יעבוד כמו שצריך.\n\nאתם מוזמנים להסתכל בקישור שנמצא כאן למטה תחת החלונית 'לקריאה נוספת' כדי לראות דוגמה מלאה לציר זמן קיים בקורס \"מהי גזענות\"."
+    }
+  },
+  {
+    "title": "1. יצירת ציר זמן חדש",
     "start_year": 1910,
     "end_year": 1920,
     "video_url": "",
-    "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/World_1898_empires_colonies_territory.png",
+    "image_url": "https://github.com/tauonlinecourses/Interactive-Timeline-Template/blob/main/static/images/%D7%AA%D7%9E%D7%95%D7%A0%D7%95%D7%AA%20%D7%9C%D7%9E%D7%93%D7%A8%D7%99%D7%9A/1.%20%D7%99%D7%A6%D7%99%D7%A8%D7%AA%20%D7%A6%D7%99%D7%A8%20%D7%96%D7%9E%D7%9F%20%D7%97%D7%93%D7%A9.png?raw=true",
     "links": [
       "https://github.com/tauonlinecourses/Interactive-Timeline"
     ],
     "descriptions": {
-      "GitHub": "כנסו לקישור שמופיע בתחתית העמוד, זהו עמוד הGitHub של הTemplate של ציר הזמן.\nאת הTemplate שכפלו לrepository חדש בGitHub של הדקאנט"
+      "GitHub": "כנסו לקישור שמופיע תחת \"קריאה נוספת\", זהו עמוד הGitHub של הTemplate של ציר הזמן.\nאת הTemplate שכפלו לrepository חדש בGitHub של הדקאנט"
     }
   },
   {
-    "title": "יצירת קובץ Google Sheest לציר הזמן החדש",
+    "title": "2. יצירת קובץ Google Sheets חדש",
     "start_year": 1920,
     "end_year": 1930,
     "video_url": "",
