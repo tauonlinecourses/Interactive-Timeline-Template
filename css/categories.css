@@ -9,10 +9,16 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    /* Ensure categories menu appears above all other fixed elements (logos, brand sticker, etc.) */
+    z-index: 1300;
     padding: 10px 20px;
     background-color: transparent;
     max-width: 90%;
+}
+
+/* When there is no logo, pull categories menu closer to the top */
+body.no-logo .categories-menu {
+    top: 60px;
 }
 
 /* Category Button - Parallelogram Shape */

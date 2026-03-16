@@ -1,7 +1,7 @@
 /* Brand Sticker */
 .brand-sticker {
     position: fixed;
-    top: 16px;
+    top: 8px;
     left: 50%;
     transform: translateX(-50%) translateZ(0);
     width: 120px;
@@ -43,7 +43,7 @@
 /* Watermark Logos */
 .watermark-logos {
     position: fixed;
-    top: 16px;
+    top: 8px;
     left: 16px;
     display: inline-flex;
     align-items: center;
@@ -67,13 +67,13 @@
 @media (max-width: 768px) {
     .brand-sticker {
         width: 85px;
-        top: 10px;
+        top: 4px;
         left: 50%;
         transform: translateX(-50%) translateZ(0);
         padding: 6px 10px;
     }
     .watermark-logos {
-        top: 10px;
+        top: 4px;
         left: 10px;
         gap: 8px;
         padding: 4px 8px;

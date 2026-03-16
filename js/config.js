@@ -12,16 +12,6 @@ const TIMELINES = {
             src: 'static/images/על ציר הזמן גזענות בהיסטוריה גלובלית.png',
             alt: 'על ציר הזמן: גזענות בהיסטוריה גלובלית'
         }
-    },
-    israel: {
-        eventsFile: 'static/events-files/israel-events.json',
-        infoFile: 'static/events-files/israel-info.json',
-        pageTitle: 'מהי גזענות | ציר זמן ישראלי',
-        themeClass: 'theme-israel',
-        titleImage: {
-            src: 'static/images/על ציר הזמן גזענות בהיסטוריה של ישראל.png',
-            alt: 'על ציר הזמן: גזענות בהיסטוריה של ישראל'
-        }
     }
 };
 
@@ -108,6 +98,49 @@ let colorPalette = [
     '#e67e22',   // Dark Orange
     '#AE563C' // original red
 ];
+
+/**
+ * Merges category-specific colors from settings into the base color palette.
+ * - Adds the settings `category_colors` at the beginning of the palette.
+ * - Preserves the first occurrence of each color and removes subsequent duplicates.
+ */
+function buildColorPaletteWithCategoryColors(basePalette, settingsCategoryColors) {
+    if (!Array.isArray(settingsCategoryColors) || settingsCategoryColors.length === 0) {
+        return basePalette;
+    }
+
+    // Normalize and clean incoming colors
+    const incoming = settingsCategoryColors
+        .map(color => typeof color === 'string' ? color.trim() : '')
+        .filter(Boolean);
+
+    if (incoming.length === 0) {
+        return basePalette;
+    }
+
+    const result = [];
+    const seen = new Set();
+
+    // First, add the category_colors in order, skipping duplicates among them
+    for (const color of incoming) {
+        const key = color.toLowerCase();
+        if (seen.has(key)) continue;
+        seen.add(key);
+        result.push(color);
+    }
+
+    // Then, add the rest of the base palette, skipping any color already seen
+    for (const color of basePalette) {
+        const normalized = typeof color === 'string' ? color.trim() : '';
+        if (!normalized) continue;
+        const key = normalized.toLowerCase();
+        if (seen.has(key)) continue;
+        seen.add(key);
+        result.push(color);
+    }
+
+    return result;
+}
 
 // Dynamic category to color mapping (will be populated after loading events)
 let categoryColors = {};

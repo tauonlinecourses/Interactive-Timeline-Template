@@ -1,6 +1,21 @@
 // Entry point: wire up UI handlers and kick off data loading.
 
-function init() {
+// Load settings.json for runtime overrides (title, logo, category colors).
+async function loadSettings() {
+    try {
+        const response = await fetch('static/events-files/settings.json', { cache: 'no-store' });
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        const data = await response.json();
+        return data && typeof data === 'object' ? data : {};
+    } catch (error) {
+        console.warn('Failed to load settings.json, using defaults.', error);
+        return {};
+    }
+}
+
+async function init() {
     // ── Apply timeline-specific configuration ──
     document.title = activeTimeline.pageTitle;
     if (activeTimeline.themeClass) {
@@ -23,8 +38,45 @@ function init() {
     });
     // Read the color palette from CSS variables (theme class must be applied first)
     const cssPalette = readColorPaletteFromCSS();
+    let basePalette = colorPalette;
     if (cssPalette) {
+        basePalette = cssPalette;
         colorPalette = cssPalette;
+    }
+
+    // Apply overrides from settings.json (title, logo, category colors)
+    const settings = await loadSettings();
+
+    // Title override: use settings.title if it is a non-empty string, otherwise keep the hard-coded default
+    if (settings && typeof settings.title === 'string') {
+        const trimmedTitle = settings.title.trim();
+        if (trimmedTitle) {
+            document.title = trimmedTitle;
+        }
+    }
+
+    // Logo override:
+    // - If settings.logo_url is the string "none" (case-insensitive), hide the logo entirely.
+    // - Otherwise, if logo_url is a non-empty string, use it as the logo image src.
+    if (settings && typeof settings.logo_url === 'string') {
+        const trimmedLogoUrl = settings.logo_url.trim();
+        const brandSticker = document.querySelector('.brand-sticker');
+        const brandLogoImg = brandSticker ? brandSticker.querySelector('img') : null;
+
+        if (trimmedLogoUrl.toLowerCase() === 'none') {
+            if (brandSticker) {
+                brandSticker.style.display = 'none';
+            }
+            // When there is no logo, bring the categories menu closer to the top
+            document.body.classList.add('no-logo');
+        } else if (trimmedLogoUrl && brandLogoImg) {
+            brandLogoImg.src = trimmedLogoUrl;
+        }
+    }
+
+    // Color palette override: prepend category_colors and remove duplicates, keeping first occurrence
+    if (settings && Array.isArray(settings.category_colors) && settings.category_colors.length > 0) {
+        colorPalette = buildColorPaletteWithCategoryColors(basePalette, settings.category_colors);
     }
 
     zoomInBtn.addEventListener('click', zoomIn);
@@ -76,6 +128,7 @@ function init() {
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
 } else {
+    // init is async; we intentionally do not await it here.
     init();
 }
 
