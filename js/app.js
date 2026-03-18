@@ -1,6 +1,7 @@
 // Entry point: wire up UI handlers and kick off data loading.
 
 // Load settings.json for runtime overrides (title, logo, category colors).
+const DEFAULT_PAGE_TITLE = 'ציר זמן אינטרקטיבי';
 async function loadSettings() {
     try {
         const response = await fetch('static/events-files/settings.json', { cache: 'no-store' });
@@ -47,13 +48,20 @@ async function init() {
     // Apply overrides from settings.json (title, logo, category colors)
     const settings = await loadSettings();
 
-    // Title override: use settings.title if it is a non-empty string, otherwise keep the hard-coded default
+    // Title override:
+    // - If settings.title is a non-empty string, use it.
+    // - Otherwise, fall back to DEFAULT_PAGE_TITLE.
+    let finalTitle = null;
     if (settings && typeof settings.title === 'string') {
         const trimmedTitle = settings.title.trim();
         if (trimmedTitle) {
-            document.title = trimmedTitle;
+            finalTitle = trimmedTitle;
         }
     }
+    if (!finalTitle) {
+        finalTitle = DEFAULT_PAGE_TITLE;
+    }
+    document.title = finalTitle;
 
     // Logo override:
     // - If settings.logo_url is the string "none" (case-insensitive), hide the logo entirely.
