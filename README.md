@@ -1,18 +1,11 @@
-# Interactive Timeline
+# Interactive Timeline Template
 
-An interactive horizontal timeline visualization tool for displaying historical events. Built with vanilla JavaScript, HTML, and CSS. Supports **multiple timeline variants** (e.g. Global, Israel) from a single codebase, switched via the `?t=` URL parameter.
+An interactive horizontal timeline visualization tool for displaying historical events. Built with vanilla JavaScript, HTML, and CSS.
 
 ## Quick Start
 
-1. Open a terminal in this directory
-2. Run: `python server.py`
-3. Open your browser:
-   - **Global timeline** (default): `http://localhost:8888/index.html`
-   - **Israel timeline**: `http://localhost:8888/index.html?t=israel`
+Go to https://tauonlinecourses.github.io/Interactive-Timeline-Template to see the complete guide for creating new timelines beased on this template.
 
-## Why a Server?
-
-Modern browsers block `fetch()` requests when opening HTML files directly (file:// protocol) due to CORS security restrictions. Using a local server solves this issue.
 
 ## Project Structure
 
@@ -67,12 +60,6 @@ interactive-timeline/
 
 ## Features
 
-### Multi-Timeline Support
-- **Multiple timeline variants** from a single codebase (e.g. Global, Israel)
-- **URL-based switching** via `?t=` parameter (e.g. `?t=israel`)
-- **Per-variant theming** with CSS custom property overrides for category colors
-- **Per-variant data files** for events and info modal content
-
 ### Timeline Visualization
 - **Horizontal scrollable timeline** with smooth drag-to-pan navigation
 - **Multi-lane event layout** automatically positions overlapping events in separate lanes
@@ -112,7 +99,6 @@ interactive-timeline/
 
 | Parameter | Example | Description |
 |-----------|---------|-------------|
-| `t` | `?t=israel` | Timeline variant selector (defaults to `global` if missing) |
 | `hide` | `?hide=cat1,cat2` | Comma-separated list of hidden categories |
 | `event` | `?event=3` | Index of the currently open event modal |
 
@@ -195,37 +181,6 @@ Category colors are defined as CSS custom properties in `css/base.css`:
     /* ... up to --category-16-color */
 }
 
-.theme-israel {
-    --category-1-color: #2563EB;
-    --category-2-color: #DC2626;
-    /* ... overrides for Israel palette */
-}
-```
-
-At initialization, `readColorPaletteFromCSS()` in `config.js` reads these CSS variables into the JavaScript `colorPalette` array. Theme classes on `<body>` override the variables, so the JS code works identically for all variants.
-
-### Other Configuration
-
-Key values in `js/config.js`:
-
-- `yearWidth` - Default pixels per year (zoom level)
-- `maxLayers` - Maximum event lanes (default: 8)
-- `maxZoomIn` / `maxZoomOut` - Zoom limits (1 to 200 px/year)
-- `yearLabelIntervalLevels` - Zoom thresholds for year label density
-
-### Info Modal Content
-
-Each timeline variant has its own info file (configured in `TIMELINES`):
-
-```json
-{
-  "Section Title": "Section content text",
-  "Another Section": "More content...",
-  "קישור לסרטון הסבר": "https://youtube.com/watch?v=..."
-}
-```
-
-The key `קישור לסרטון הסבר` (Hebrew for "link to explanation video") is special and embeds a YouTube video in the modal.
 
 ## Browser Support
 
