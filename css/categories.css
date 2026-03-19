@@ -6,7 +6,7 @@
     transform: translateX(-50%);
     display: flex;
     gap: 25px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
     /* Ensure categories menu appears above all other fixed elements (logos, brand sticker, etc.) */

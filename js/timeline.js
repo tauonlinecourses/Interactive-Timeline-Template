@@ -123,6 +123,24 @@ function renderTimeline(scrollToEnd = false, centerYear = null) {
     renderYearLabels();
     renderEvents();
 
+    // Post-render: measure rightmost edge of all rendered events and stretch
+    // layers if events were shifted beyond effectiveWidth by the spread algorithm.
+    const allRenderedEvents = eventsLayer.querySelectorAll('.event:not(.fade-out)');
+    let maxRight = effectiveWidth;
+    allRenderedEvents.forEach(el => {
+        const left = parseFloat(el.style.left) || 0;
+        const width = parseFloat(el.style.width) || 0;
+        maxRight = Math.max(maxRight, left + width);
+    });
+    if (maxRight > effectiveWidth) {
+        eventsLayer.style.width = `${maxRight}px`;
+        yearsLayer.style.width = `${maxRight}px`;
+        reflectionLayer.style.width = `${maxRight}px`;
+        if (timelineLine) {
+            timelineLine.style.width = `${maxRight}px`;
+        }
+    }
+
     setTimeout(() => {
         if (scrollToEnd) {
             // RTL: newest events are at left (scrollLeft = 0) — no scrolling needed.
@@ -232,10 +250,18 @@ function renderEvents() {
         }
     });
 
-    const maxLayers = 8; // Maximum lanes to prevent infinite growth
     const isMobile = window.innerWidth < 768;
+    const isTablet = window.innerWidth >= 768 && window.innerWidth <= 1024;
+    const isShortScreen = window.innerHeight < 900 && !isMobile;
     const layerSpacing = isMobile ? 55 : 65;
     const eventsLayerHeight = (eventsLayer?.clientHeight || eventsLayer?.offsetHeight || 800);
+
+    // Dynamically calculate maxLayers based on available screen height
+    const fittingReserve = (isMobile || isTablet || isShortScreen) ? 5 : 30;
+    const expectedPushUp = (isTablet || isShortScreen) ? 0 : 65;
+    const availableForLayers = eventsLayerHeight - fittingReserve - expectedPushUp;
+    const fittingLayers = Math.floor(availableForLayers / layerSpacing) + 1;
+    const maxLayers = Math.min(8, Math.max(1, fittingLayers));
     const eventHeight = 30;
     const laneOccupancy = []; // Dynamic array - lanes added as needed
     // Track events by lane with their event index for title visibility checks
@@ -311,7 +337,7 @@ function renderEvents() {
                 showReflectionBlock(event.start_year, event.end_year, eventColor, reflectionLeft, reflectionWidth);
                 const followCursor = eventDurationYears >= 15;
                 const laneIndex = parseInt(eventDiv.getAttribute('data-lane-index') || '0', 10);
-                const placement = laneIndex >= 7 ? 'below' : 'above';
+                const placement = laneIndex >= maxLayers - 2 ? 'below' : 'above';
                 showEventTooltip(event, eventDiv, followCursor, e, placement);
                 highlightMinimapEvent(eventDiv);
             });
@@ -727,7 +753,8 @@ function renderEvents() {
     if (fixedPushUpOffset === null) {
         fixedPushUpOffset = baselinePushUpOffset;
     }
-    const pushUpOffset = fixedPushUpOffset;
+    // Disable push-up on tablets and short screens to prevent events drifting into the categories menu
+    const pushUpOffset = (isTablet || isShortScreen) ? 0 : fixedPushUpOffset;
 
     const allEventElements = eventsLayer.querySelectorAll('.event:not(.fade-out)');
     allEventElements.forEach(eventDiv => {
@@ -738,7 +765,9 @@ function renderEvents() {
         const laneIndex = parseInt(eventDiv.getAttribute('data-lane-index'), 10);
         if (!isNaN(laneIndex)) {
             const verticalOffset = laneIndex * layerSpacing;
-            const topPosition = eventsLayerHeight - eventHeight - verticalOffset - pushUpOffset;
+            // Clamp to a minimum of 5px so events never render above the events-layer top
+            // (which would cause them to be hidden behind the fixed categories menu).
+            const topPosition = Math.max(5, eventsLayerHeight - eventHeight - verticalOffset - pushUpOffset);
             eventDiv.style.top = `${topPosition}px`;
         }
 

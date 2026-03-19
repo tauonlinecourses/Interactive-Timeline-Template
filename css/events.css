@@ -102,7 +102,7 @@
     opacity: 0;
     transition: opacity 0.15s ease;
     white-space: normal;
-    z-index: 1200;
+    z-index: 1400;
     border: 1px solid #e2e8f0;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
     max-width: 320px;
