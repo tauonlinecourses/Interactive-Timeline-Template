@@ -74,7 +74,7 @@
     height: 180px;
     background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
     background-size: cover;
-    background-position: center;
+    background-position: center top;
     flex-shrink: 0;
 }
 

@@ -184,8 +184,10 @@ function showEventModal(event, options = {}) {
     if (event.image_url && event.image_url.trim() !== '') {
         modalHero.style.backgroundImage = `url('${event.image_url}')`;
         modalHero.style.backgroundSize = 'cover';
-        heroScrollPosition = { x: 50, y: 50 };
-        modalHero.style.backgroundPosition = '50% 50%';
+        // Default (collapsed) view should show the top of the image.
+        // We still keep the wheel-pan feature, but start from y=0 (top).
+        heroScrollPosition = { x: 50, y: 0 };
+        modalHero.style.backgroundPosition = '50% 0%';
         if (modalHeroExpandBtn) modalHeroExpandBtn.style.display = 'flex';
     } else {
         if (modalHeroExpandBtn) modalHeroExpandBtn.style.display = 'none';

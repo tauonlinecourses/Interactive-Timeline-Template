@@ -83,6 +83,7 @@ We use a **desktop-first** approach with mobile overrides:
    - Stacked content (videos above descriptions)
    - Fixed-size navigation buttons (110px × 44px)
    - Hero section: 150px height (100px in landscape)
+   - Hero image crop: `.modal-hero` uses `background-position: center top` (top-aligned) in the non-expanded state
 
 7. **Brand & Watermark**
    - Brand sticker: 80px width, positioned top-right

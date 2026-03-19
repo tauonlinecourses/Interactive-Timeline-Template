@@ -518,7 +518,8 @@ The key `קישור לסרטון הסבר` (Hebrew for "link to explanation vide
 1. **Layout**: `css/modal.css`
 2. **Content**: `showEventModal()` in `js/modal.js`
 3. **Navigation**: `showPreviousEvent()`, `showNextEvent()` in `js/modal.js`
-4. **Hero image expansion**: When `.hero-expanded` is applied to `.modal-content`, the hero image covers the modal and the close button inside the hero is hidden; users close the modal via background click or keyboard (Escape).
+4. **Hero image default crop (collapsed)**: The event modal hero uses a `background-image` on `.modal-hero` with `background-size: cover`. `showEventModal()` initializes the inline `background-position` to `50% 0%` (top-aligned) so the **top of the image is visible** by default in the non-expanded state. Users can then mouse-wheel pan the crop (updates background-position percentages).
+5. **Hero image expansion**: When `.hero-expanded` is applied to `.modal-content`, the hero image covers the modal (`background-size: contain`, `background-position: center`) and the close button inside the hero is hidden; users close the modal via background click or keyboard (Escape).
 
 ### Adding Category Colors
 
